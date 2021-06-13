@@ -9,9 +9,9 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttToken;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+//import org.json.simple.JSONObject;
+//import org.json.simple.parser.JSONParser;
+//import org.json.simple.parser.ParseException;
 
 public class MqttConnection extends Thread {
 
@@ -22,11 +22,11 @@ public class MqttConnection extends Thread {
 	 */
 
 	private MqttClient client;
-	JSONParser parser;
+//	JSONParser parser;
 
 	public MqttConnection() {
 		try {
-			parser = new JSONParser();
+//			parser = new JSONParser();
 			unverschluesselt();
 		} catch (MqttException e) {
 			e.printStackTrace();
