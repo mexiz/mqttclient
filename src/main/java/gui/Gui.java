@@ -3,8 +3,11 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,6 +29,7 @@ public class Gui extends Thread {
 	 */
 
 	public JFrame frame;
+	public JFrame framelogin;
 	public JTextArea txt;
 
 	public JPanel contentPane;
@@ -39,13 +43,14 @@ public class Gui extends Thread {
 
 	public Gui() {
 		init();
+		loginscreen();
 	}
 
 	private void init() {
-
+		
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setTitle("MQTT");
+		frame.setTitle("MQTT: Client");
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
 //CONTENTPANEL
@@ -117,12 +122,37 @@ public class Gui extends Thread {
 
 		contentPane.add(centerPanel, BorderLayout.CENTER);
 		contentPane.add(rightPanel, BorderLayout.EAST);
-//		contentPane.add(leftPanel, BorderLayout.WEST);
+//		contentPane.setVisible(false);
 
-		frame.setContentPane(contentPane);
+		frame.getContentPane().add(contentPane);
 		frame.pack();
-		frame.setVisible(true);
+		frame.setVisible(false);
 
+	}
+	
+	public void loginscreen() {
+		frame.setVisible(false);
+		framelogin = new JFrame();
+		framelogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		framelogin.setTitle("MQTT: Connect with Server");
+		framelogin.setVisible(true);
+		framelogin.setSize(500, 500);
+		framelogin.setBackground(Color.BLUE);
+		JPanel test = new JPanel();
+		test.setPreferredSize(new Dimension(500, 500));
+		JButton btn = new JButton("login");
+		btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				frame.setVisible(true);
+				framelogin.dispose();
+				
+			}
+		});
+		framelogin.getContentPane().add(btn);
+		
+
+		
 	}
 
 }

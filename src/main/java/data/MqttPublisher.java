@@ -45,12 +45,12 @@ public class MqttPublisher extends Thread {
 //			
 //				String t = "{\"pres\": " + "\"" + String.valueOf(Math.round(Math.random()*100) + "\"" +"}");
 
-				String acc = "{'acc x': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + ", "
-						+ "'acc y': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + ", " + "'acc z': "
+				String acc = "{'acc x': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'"+ ", " +
+        				"'acc y': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + ", " + "'acc z': "
 						+ "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + "}";
-				String mag = "{'mag x': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + ", "
-						+ "'mag y': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + ", " + "'mag z': "
-						+ "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + "}";
+				String mag = "{'mag x': " + "'" + String.valueOf(Math.round(Math.random() * 1000)) + "'" + ", "
+						+ "'mag y': " + "'" + String.valueOf(Math.round(Math.random() * 1000)) + "'" + ", " + "'mag z': "
+						+ "'" + String.valueOf(Math.round(Math.random() * 1000)) + "'" + "}";
 				String gyro = "{'gyr x': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + ", "
 						+ "'gyr y': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + ", " + "'gyr z': "
 						+ "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + "}";

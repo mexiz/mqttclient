@@ -60,11 +60,14 @@ public class Controller {
 //ADDMESSAGE
 	public void addMessageConsole(String topic, MqttMessage nachricht) {
 		String text = "";
-
+		String vorlagetopic = "Topic: \"";
+		String vorlagenachricht = "\" | Nachricht: \"";
+		String vorlageende = "\"\n";
+		
 		stringnachricht.add(new TopicNachrichten(topic, nachricht));
 		for (int i = 0; i < stringnachricht.size(); i++) {
-			text += "Topic -> " + stringnachricht.get(i).getTopic() + " | Nachricht -> "
-					+ stringnachricht.get(i).getnachricht().toString() + "\n";
+			text += vorlagetopic + stringnachricht.get(i).getTopic() + vorlagenachricht
+					+ stringnachricht.get(i).getnachricht().toString() + vorlageende;
 		}
 		gui.txt.setText(text);
 	}
