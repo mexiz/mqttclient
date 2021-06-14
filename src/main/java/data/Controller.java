@@ -1,8 +1,5 @@
 package data;
 
-import java.util.ArrayList;
-import java.util.Queue;
-
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -35,7 +32,6 @@ public class Controller {
 	boolean issub;
 	public String currentsubscribedtopic;
 
-//	ArrayList<TopicNachrichten> message;
 	ArrayListMaxSize<TopicNachrichten> stringnachricht;
 
 	public static void main(String[] args) {
@@ -90,7 +86,6 @@ public class Controller {
 		if (issub == false) {
 			try {
 				mqttclient.subscribe(topic);
-//				gui.txt.setText("Client subscribed to --> " + topic);
 				currentsubscribedtopic = topic;
 				// DATENKURVE WIRD GEWECHSELT
 				if (datenkurve != null) {
@@ -106,10 +101,4 @@ public class Controller {
 		}
 
 	}
-
-//wird für die GUI benötigt für die subscribeto methode
-	public MqttConnection getConnection() {
-		return mqttconnection;
-	}
-
 }

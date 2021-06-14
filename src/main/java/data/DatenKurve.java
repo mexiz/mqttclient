@@ -1,23 +1,15 @@
 package data;
 
 import java.awt.BorderLayout;
-import java.sql.Time;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.Series;
-import org.jfree.data.general.SeriesException;
 import org.jfree.data.time.Second;
-import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
+import org.json.JSONObject;
 
 import vorlagen.DataCollection;
 import vorlagen.TopicTable;
@@ -25,6 +17,7 @@ import vorlagen.TopicTable;
 public class DatenKurve {
 
 	/*
+	 * 
 	 * 
 	 * 
 	 */
@@ -49,15 +42,15 @@ public class DatenKurve {
 		createChartPanel(topic, "temp", collectionliste.get(topic).getCollection());
 	}
 
-	public void addData(String topic, double werty) {
+	public void addData(String topic, JSONObject json) {
 		current = (Second) current.next();
-		collectionliste.get(topic).addDataSeries(current, werty);
-		
+		collectionliste.get(topic).addDataSeries(current, json);
+
 	}
 
 	private void createChartPanel(String topic, String yAchseName, TimeSeriesCollection chartcollection) {
 		XYDataset dataset = chartcollection;
-		chart = ChartFactory.createTimeSeriesChart(topic, "time", yAchseName, dataset);
+		chart = ChartFactory.createTimeSeriesChart(topic, "", "", dataset);
 		panelchart = new ChartPanel(chart);
 		panelchart.setSize(Controller.getInstance().gui.rightbottom.getSize());
 		Controller.getInstance().gui.rightbottom.removeAll();

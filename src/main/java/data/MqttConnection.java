@@ -9,15 +9,13 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttToken;
-//import org.json.simple.JSONObject;
-//import org.json.simple.parser.JSONParser;
-//import org.json.simple.parser.ParseException;
+import org.json.JSONObject;
 
 public class MqttConnection extends Thread {
 
 	/*
 	 * 
-	 *  tes
+	 * tes
 	 * 
 	 */
 
@@ -26,7 +24,6 @@ public class MqttConnection extends Thread {
 
 	public MqttConnection() {
 		try {
-//			parser = new JSONParser();
 			unverschluesselt();
 		} catch (MqttException e) {
 			e.printStackTrace();
@@ -71,25 +68,13 @@ public class MqttConnection extends Thread {
 			public void messageArrived(String topic, MqttMessage message) throws Exception {
 				Controller.getInstance().addMessageConsole(topic, message);
 				if (Controller.getInstance().datenkurve != null) {
-					Controller.getInstance().datenkurve.addData(topic, Double.parseDouble(message.toString()));
-
+					Controller.getInstance().datenkurve.addData(topic,
+							new JSONObject(new String(message.getPayload())));
 				}
-				String test = new String(message.getPayload());
-				System.out.println(test);
-//				try {
-//					JSONObject json = new JSONObject();	
-//					json = (JSONObject) parser.parse(test);
-//					System.out.println(json.get("temp"));
-//						
-//				} catch (ParseException e) {
-//					System.err.println(e.toString());
-//				}
-
 			}
 
 			@Override
 			public void deliveryComplete(IMqttDeliveryToken token) {
-
 			}
 
 			@Override
