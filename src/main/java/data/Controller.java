@@ -3,6 +3,7 @@ package data;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.internal.wire.MqttPubComp;
 
 import gui.Gui;
 import vorlagen.ArrayListMaxSize;
@@ -18,19 +19,20 @@ public class Controller {
 
 	private Controller() {
 		init();
-		mqttconnection.start();
 		mqttpublisher.start();
+		mqttconnection.start();
 	}
 
 	static Controller instance;
 	public String test;
 	public Gui gui;
-	public MqttConnection mqttconnection;
+	public static MqttConnection mqttconnection;
 	public MqttPublisher mqttpublisher;
 	public MqttClient mqttclient;
 	public DatenKurve datenkurve;
 	boolean issub;
 	public String currentsubscribedtopic;
+	public MqttOnMessage onMessage;
 
 	ArrayListMaxSize<TopicNachrichten> stringnachricht;
 
@@ -39,15 +41,12 @@ public class Controller {
 	}
 
 	private void init() {
-//		message = new ArrayList<TopicNachrichten>();
 		stringnachricht = new ArrayListMaxSize<TopicNachrichten>(10);
 		gui = new Gui();
 		mqttconnection = new MqttConnection();
 		mqttpublisher = new MqttPublisher();
 		datenkurve = new DatenKurve();
-
-		mqttclient = mqttconnection.getMqttClient();
-
+		onMessage = new MqttOnMessage();
 	}
 
 	public static Controller getInstance() {
@@ -57,7 +56,6 @@ public class Controller {
 		return instance;
 	}
 
-//ADDMESSAGE
 	public void addMessageConsole(String topic, MqttMessage nachricht) {
 		String text = "";
 		String vorlagetopic = "Topic: \"";
@@ -100,8 +98,15 @@ public class Controller {
 			} catch (MqttException e) {
 				e.printStackTrace();
 			}
-
 		}
-
+	}
+	
+	public void startmsg() {
+		mqttclient = MqttConnection.client;
+		onMessage.start();
+	}
+	@SuppressWarnings("deprecation")
+	public void stopmsg() {
+		onMessage.stop();
 	}
 }
