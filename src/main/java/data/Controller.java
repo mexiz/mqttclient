@@ -1,7 +1,5 @@
 package data;
 
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -22,7 +20,7 @@ public class Controller {
 	private Controller() {
 		init();
 		mqttpublisher.start();
-		mqttconnection.start();
+//		mqttconnection.start();
 	}
 
 	static Controller instance;
@@ -30,7 +28,6 @@ public class Controller {
 	public Gui gui;
 	public static MqttConnection mqttconnection;
 	public MqttPublisher mqttpublisher;
-//	public MqttAsyncClient mqttclient;
 	public MqttClient mqttclient;
 	public DatenKurve datenkurve;
 	boolean issub;
@@ -52,6 +49,7 @@ public class Controller {
 		datenkurve = new DatenKurve();
 		onMessage = new MqttOnMessage();
 		ssl = new SslUtil();
+		datenkurve.start();
 	}
 
 	public static Controller getInstance() {
@@ -79,31 +77,30 @@ public class Controller {
 		if (issub) {
 			try {
 				mqttclient.unsubscribe(currentsubscribedtopic);
+
 				currentsubscribedtopic = null;
 				issub = false;
 				stringnachricht.clear();
 				gui.txt.setText("");
 
 			} catch (MqttException e) {
-				e.printStackTrace();
+				System.err.println("1Class: Controller: " + e.getMessage());
 			}
-
 		}
 		if (issub == false) {
+			// DATENKURVE WIRD GEWECHSELT
+			if (datenkurve != null) {
+				datenkurve.setChart(topic);
+			}
 			try {
-				mqttclient.subscribe(topic,0);	
+				mqttclient.subscribe(topic);	
+				gui.txt.append( topic + "\n");
 				currentsubscribedtopic = topic;
 			} catch (MqttException e) {
-				e.printStackTrace();
-			}		
-				// DATENKURVE WIRD GEWECHSELT
-				if (datenkurve != null) {
-					datenkurve.setChart(topic);
-				}
-
-				issub = true;
-
-		
+				System.err.println("2Class: Controller: " + e.getMessage());
+			}
+			
+			issub = true;
 		}
 	}
 	

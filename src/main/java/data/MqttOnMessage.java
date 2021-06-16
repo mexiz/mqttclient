@@ -13,7 +13,6 @@ public class MqttOnMessage extends Thread{
 
 				@Override
 				public void messageArrived(String topic, MqttMessage message) throws Exception {
-//					Controller.getInstance().addMessageConsole(topic, message);
 					String error = "[Json-Format!]";
 					if (Controller.getInstance().datenkurve != null) {
 						try {

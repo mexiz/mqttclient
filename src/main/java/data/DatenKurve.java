@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import vorlagen.DataCollection;
 import vorlagen.TopicTable;
 
-public class DatenKurve {
+public class DatenKurve extends Thread {
 
 	/*
 	 * 
@@ -44,8 +44,10 @@ public class DatenKurve {
 
 	public void addData(String topic, JSONObject json) {
 		current = (Second) current.next();
-		collectionliste.get(topic).addDataSeries(current, json);
-
+		try {
+			collectionliste.get(topic).addDataSeries(current, json);
+		} catch (Exception e) {
+		}
 	}
 
 	private void createChartPanel(String topic, String yAchseName, TimeSeriesCollection chartcollection) {

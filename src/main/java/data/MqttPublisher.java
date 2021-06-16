@@ -13,23 +13,22 @@ public class MqttPublisher extends Thread {
 	 * TEST PUBLISH
 	 * 
 	 */
-
+	MqttClient pub;
 	@Override
 	public void run() {
-		MqttClient pub;
-		MqttClient pubcrypted;
+		
 		try {
-			pubcrypted = new MqttClient("ssl://test.mosquitto.org:8883", MqttClient.generateClientId());
 			
-			pub = new MqttClient("tcp://test.mosquitto.org:1883", MqttClient.generateClientId());
+			pub = new MqttClient("tcp://test.mosquitto.org:1883", "z_markus_pub_unencrypted");
 			pub.connect();
 			if (pub.isConnected()) {
+				
 				Controller.getInstance().gui.txt.append("Pub-Client connected\n");
 //				System.out.println("Pub-Client Connected");
 				TopicTable tp = new TopicTable();
 				Object[][] a = tp.topics;
 				 while (true) {
-	
+//					System.err.println("pub ip: " + pub.getCurrentServerURI() + "pub 2: " + pub.getServerURI());
 					String acc = "{'acc x': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'"+ ", " +
 	        				"'acc y': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + ", " + "'acc z': "
 							+ "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + "}";
@@ -46,29 +45,21 @@ public class MqttPublisher extends Thread {
 					String q = ", " + "'q': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" ;
 					String e = ", " + "'e': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" ;
 					String t = "{'temp': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + w + q + e+ "}";
-					MqttMessage tempm = new MqttMessage(temp.getBytes());
-					MqttMessage presm = new MqttMessage(pres.getBytes());
-					MqttMessage humm = new MqttMessage(hum.getBytes());
-					MqttMessage accm = new MqttMessage(acc.getBytes());
-					MqttMessage gyrom = new MqttMessage(gyro.getBytes());
-					MqttMessage magm = new MqttMessage(mag.getBytes());
-	
-					MqttMessage test = new MqttMessage(t.getBytes());	
-					
-//					pub.publish("Temperatura", test);
-//					pub.publish(a[0][0].toString(), t.getBytes(), 1 , true);
-//					pub.publish(a[1][0].toString(), presm);
-//					pub.publish(a[2][0].toString(), humm);
-//					pub.publish(a[3][0].toString(), accm);
-//					pub.publish(a[4][0].toString(), gyrom);
-//					pub.publish(a[5][0].toString(), magm);
-//					
-//					pub.publish(a[6][0].toString(), tempm);
-//					pub.publish(a[7][0].toString(), presm);
-//					pub.publish(a[8][0].toString(), humm);
-//					pub.publish(a[9][0].toString(), accm);
-//					pub.publish(a[10][0].toString(), gyrom);
-//					pub.publish(a[11][0].toString(), magm);
+
+					pub.publish(a[0][0].toString(), t.getBytes(), 0, false);
+					pub.publish(a[1][0].toString(), pres.getBytes(), 0, false);
+					pub.publish(a[2][0].toString(), hum.getBytes(), 0, false);
+					pub.publish(a[3][0].toString(), acc.getBytes(), 0, false);
+					pub.publish(a[4][0].toString(), gyro.getBytes(), 0, false);
+					pub.publish(a[5][0].toString(), mag.getBytes(), 0, false);
+					pub.publish(a[6][0].toString(), temp.getBytes(), 0, false);
+					pub.publish(a[7][0].toString(), pres.getBytes(), 0, false);
+					pub.publish(a[8][0].toString(), hum.getBytes(), 0, false);
+					pub.publish(a[9][0].toString(), acc.getBytes(), 0, false);
+					pub.publish(a[10][0].toString(), gyro.getBytes(), 0, false);
+					pub.publish(a[11][0].toString(), mag.getBytes(), 0, false);
+
+
 	
 					try {
 						Thread.sleep(1000);
@@ -78,7 +69,7 @@ public class MqttPublisher extends Thread {
 				 }
 			}
 		} catch (MqttException e1) {
-			e1.printStackTrace();
+			System.err.println("Class: publish: " + e1.getMessage());
 		}
 
 	}

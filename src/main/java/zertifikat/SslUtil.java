@@ -67,11 +67,11 @@ public class SslUtil {
 				.setProvider("BC");
 		KeyPair key;
 		if (object instanceof PEMEncryptedKeyPair) {
-			System.out.println("Encrypted key - we will use provided password");
+			System.out.println("Encrypted key");
 			key = converter.getKeyPair(((PEMEncryptedKeyPair) object)
 					.decryptKeyPair(decProv));
 		} else {
-			System.out.println("Unencrypted key - no password needed");
+//			System.out.println("Unencrypted key - no password needed");
 			key = converter.getKeyPair((PEMKeyPair) object);
 		}
 		pemParser.close();
