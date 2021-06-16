@@ -1,6 +1,7 @@
 package data;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -29,6 +30,7 @@ public class Controller {
 	public Gui gui;
 	public static MqttConnection mqttconnection;
 	public MqttPublisher mqttpublisher;
+//	public MqttAsyncClient mqttclient;
 	public MqttClient mqttclient;
 	public DatenKurve datenkurve;
 	boolean issub;
@@ -89,7 +91,7 @@ public class Controller {
 		}
 		if (issub == false) {
 			try {
-				mqttclient.subscribe(topic);	
+				mqttclient.subscribe(topic,0);	
 				currentsubscribedtopic = topic;
 			} catch (MqttException e) {
 				e.printStackTrace();

@@ -17,7 +17,10 @@ public class MqttPublisher extends Thread {
 	@Override
 	public void run() {
 		MqttClient pub;
+		MqttClient pubcrypted;
 		try {
+			pubcrypted = new MqttClient("ssl://test.mosquitto.org:8883", MqttClient.generateClientId());
+			
 			pub = new MqttClient("tcp://test.mosquitto.org:1883", MqttClient.generateClientId());
 			pub.connect();
 			if (pub.isConnected()) {
@@ -52,20 +55,20 @@ public class MqttPublisher extends Thread {
 	
 					MqttMessage test = new MqttMessage(t.getBytes());	
 					
-					pub.publish("Temperatura", test);
-					pub.publish(a[0][0].toString(), tempm);
-					pub.publish(a[1][0].toString(), presm);
-					pub.publish(a[2][0].toString(), humm);
-					pub.publish(a[3][0].toString(), accm);
-					pub.publish(a[4][0].toString(), gyrom);
-					pub.publish(a[5][0].toString(), magm);
-					
-					pub.publish(a[6][0].toString(), tempm);
-					pub.publish(a[7][0].toString(), presm);
-					pub.publish(a[8][0].toString(), humm);
-					pub.publish(a[9][0].toString(), accm);
-					pub.publish(a[10][0].toString(), gyrom);
-					pub.publish(a[11][0].toString(), magm);
+//					pub.publish("Temperatura", test);
+//					pub.publish(a[0][0].toString(), t.getBytes(), 1 , true);
+//					pub.publish(a[1][0].toString(), presm);
+//					pub.publish(a[2][0].toString(), humm);
+//					pub.publish(a[3][0].toString(), accm);
+//					pub.publish(a[4][0].toString(), gyrom);
+//					pub.publish(a[5][0].toString(), magm);
+//					
+//					pub.publish(a[6][0].toString(), tempm);
+//					pub.publish(a[7][0].toString(), presm);
+//					pub.publish(a[8][0].toString(), humm);
+//					pub.publish(a[9][0].toString(), accm);
+//					pub.publish(a[10][0].toString(), gyrom);
+//					pub.publish(a[11][0].toString(), magm);
 	
 					try {
 						Thread.sleep(1000);

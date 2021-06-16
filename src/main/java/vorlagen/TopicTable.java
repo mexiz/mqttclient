@@ -15,8 +15,8 @@ public class TopicTable extends DefaultTableModel {
 	public static Object[][] topics = { { "Temperature" }, { "Pressure" }, { "Humidity" }, { "Accelleration" },
 			{ "Gyrodata" }, { "Magdata" } , { "Temperature/TEST" }, { "Pressure/TEST" }, { "Humidity/TEST" }, { "Accelleration/TEST" },
 			{ "Gyrodata/TEST" }, { "Magdata/TEST" } ,{"Temperatura"} };
-//	public static Object[][] topics = { { "Temperature" }, { "Pressure" }, { "Humidity" }, { "Accelleration" },
-//					{ "Gyrodata" }, { "Magdata" } };
+	
+//	public static Object[][] topics = { { "Temperature" }, { "Pressure" }, { "Humidity" }, { "Accelleration" },{ "Gyrodata" }, { "Magdata" } };
 
 	public TopicTable(Object[][] data, String[] names) {
 		super(data, names);

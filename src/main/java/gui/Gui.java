@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -254,5 +255,13 @@ public class Gui extends Thread {
 		framelogin.getContentPane().add(loginscreen);
 		framelogin.pack();
 	}
+	
+	private void showOpenDialog() {
+		   JFileChooser fileChooser = new JFileChooser();
+		   int choice = fileChooser.showOpenDialog(null);
+		   if(choice == JFileChooser.APPROVE_OPTION) {
+		      System.out.println(fileChooser.getSelectedFile());
+		   }
+		}
 
 }
