@@ -3,6 +3,7 @@ package data;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MqttOnMessage extends Thread{
@@ -12,11 +13,20 @@ public class MqttOnMessage extends Thread{
 
 				@Override
 				public void messageArrived(String topic, MqttMessage message) throws Exception {
-					Controller.getInstance().addMessageConsole(topic, message);
+//					Controller.getInstance().addMessageConsole(topic, message);
+					String error = "[Json-Format!]";
 					if (Controller.getInstance().datenkurve != null) {
-						Controller.getInstance().datenkurve.addData(topic,
-								new JSONObject(new String(message.getPayload())));
+						try {
+							JSONObject add = new JSONObject(new String(message.getPayload()));
+							Controller.getInstance().datenkurve.addData(topic, add);
+						} catch (JSONException e) {
+//							System.err.println("Catch OnMessage: " + "kein JSON");
+							error = "[kein Json-Format]";
+						}
+//						Controller.getInstance().datenkurve.addData(topic,
+//								new JSONObject(new String(message.getPayload())));
 					}
+					Controller.getInstance().addMessageConsole(topic, message , error);
 				}
 
 				@Override

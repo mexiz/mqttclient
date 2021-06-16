@@ -35,9 +35,12 @@ public class SslUtil {
 			throws Exception {
 
 		Security.addProvider(new BouncyCastleProvider());
-
-		// load CA certificate
 		X509Certificate caCert = null;
+		X509Certificate cert = null;
+		
+		PEMParser pemParser = null;
+		// load CA certificate
+
 
 		FileInputStream fis = new FileInputStream(caCrtFile);
 		BufferedInputStream bis = new BufferedInputStream(fis);
@@ -50,14 +53,12 @@ public class SslUtil {
 
 		// load client certificate
 		bis = new BufferedInputStream(new FileInputStream(crtFile));
-		X509Certificate cert = null;
 		while (bis.available() > 0) {
 			cert = (X509Certificate) cf.generateCertificate(bis);
 			// System.out.println(caCert.toString());
 		}
 
 		// load client private key
-		PEMParser pemParser = null;
 		pemParser = new PEMParser(new FileReader(keyFile));
 		Object object = null;
 		object = pemParser.readObject();

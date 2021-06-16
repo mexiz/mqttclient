@@ -8,6 +8,8 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import data.Controller;
+
 public class DataCollection {
 
 	ArrayList<TimeSeries> series;
@@ -23,14 +25,16 @@ public class DataCollection {
 				if (series.size() == i) {
 					if (i == 0)
 						collection.removeAllSeries();
-					series.add(new TimeSeries(key));
+					TimeSeries add = new TimeSeries(key);
+					add.setMaximumItemCount(Controller.getInstance().maxanzahlnachrichten);
+					series.add(add);
 					collection.addSeries(series.get(i));
 				}
 				series.get(i).add(s, json.getDouble(key));
 				i++;
 			}
 		} catch (JSONException e) {
-			System.err.println("DATACOLLECTION: " + e.getMessage());
+			System.err.println("Catch DATACOLLECTION: " + e.getMessage());
 		}
 	}
 

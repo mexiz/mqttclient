@@ -1,13 +1,14 @@
 package data;
 
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.internal.wire.MqttPubComp;
 
 import gui.Gui;
 import vorlagen.ArrayListMaxSize;
 import vorlagen.TopicNachrichten;
+import zertifikat.SslUtil;
 
 public class Controller {
 
@@ -33,20 +34,22 @@ public class Controller {
 	boolean issub;
 	public String currentsubscribedtopic;
 	public MqttOnMessage onMessage;
-
+	public SslUtil ssl;
 	ArrayListMaxSize<TopicNachrichten> stringnachricht;
+	public int maxanzahlnachrichten = 10;
 
 	public static void main(String[] args) {
 		Controller.getInstance();
 	}
 
 	private void init() {
-		stringnachricht = new ArrayListMaxSize<TopicNachrichten>(10);
+		stringnachricht = new ArrayListMaxSize<TopicNachrichten>(maxanzahlnachrichten);
 		gui = new Gui();
 		mqttconnection = new MqttConnection();
 		mqttpublisher = new MqttPublisher();
 		datenkurve = new DatenKurve();
 		onMessage = new MqttOnMessage();
+		ssl = new SslUtil();
 	}
 
 	public static Controller getInstance() {
@@ -56,16 +59,16 @@ public class Controller {
 		return instance;
 	}
 
-	public void addMessageConsole(String topic, MqttMessage nachricht) {
+	public void addMessageConsole(String topic, MqttMessage nachricht , String error) {
 		String text = "";
 		String vorlagetopic = "Topic: \"";
 		String vorlagenachricht = "\" | Nachricht: \"";
-		String vorlageende = "\"\n";
+		String vorlageende = "\n";
 		
-		stringnachricht.add(new TopicNachrichten(topic, nachricht));
+		stringnachricht.add(new TopicNachrichten(topic, nachricht, error));
 		for (int i = 0; i < stringnachricht.size(); i++) {
 			text += vorlagetopic + stringnachricht.get(i).getTopic() + vorlagenachricht
-					+ stringnachricht.get(i).getnachricht().toString() + vorlageende;
+					+ stringnachricht.get(i).getnachricht().toString() + "\" | " + stringnachricht.get(i).getError().toString() + vorlageende;
 		}
 		gui.txt.setText(text);
 	}
@@ -86,8 +89,11 @@ public class Controller {
 		}
 		if (issub == false) {
 			try {
-				mqttclient.subscribe(topic);
+				mqttclient.subscribe(topic);	
 				currentsubscribedtopic = topic;
+			} catch (MqttException e) {
+				e.printStackTrace();
+			}		
 				// DATENKURVE WIRD GEWECHSELT
 				if (datenkurve != null) {
 					datenkurve.setChart(topic);
@@ -95,9 +101,7 @@ public class Controller {
 
 				issub = true;
 
-			} catch (MqttException e) {
-				e.printStackTrace();
-			}
+		
 		}
 	}
 	

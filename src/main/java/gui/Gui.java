@@ -165,9 +165,9 @@ public class Gui extends Thread {
 		p1.setLayout(new FlowLayout());
 		JLabel serverlabel = new JLabel("Server-ip: ");
 		final JTextField server = new JTextField(21);
-//		server.setText("test.mosquitto.org");
+		server.setText("test.mosquitto.org");
 		final JTextField port = new JTextField(10);
-//		port.setText("1883");
+		port.setText("1883");
 		p1.add(serverlabel);
 		p1.add(server);
 		p1.add(port);
@@ -175,9 +175,9 @@ public class Gui extends Thread {
 		JPanel p2 = new JPanel();
 		p2.setLayout(new FlowLayout());
 		ButtonGroup group = new ButtonGroup();
-		JRadioButton r1 = new JRadioButton("unverschlüsselt");
+		final JRadioButton r1 = new JRadioButton("unverschlüsselt");
 		r1.setSelected(true);
-		JRadioButton r2 = new JRadioButton("verschlüsselt");
+		final JRadioButton r2 = new JRadioButton("verschlüsselt");
 		group.add(r1);
 		group.add(r2);
 		
@@ -187,7 +187,8 @@ public class Gui extends Thread {
 		JPanel p3 = new JPanel();
 		p3.setLayout(new FlowLayout());
 		JLabel usernamelabel = new JLabel("Username");
-		JTextField username = new JTextField(20);
+		final JTextField username = new JTextField(20);
+		username.setText("");
 		p3.add(usernamelabel);
 		p3.add(username);
 		
@@ -195,13 +196,14 @@ public class Gui extends Thread {
 		p4.setLayout(new FlowLayout());
 
 		JLabel passwordlabel = new JLabel("Passwort");
-		JPasswordField password = new JPasswordField(20);
+		final JTextField password = new JTextField(20);
+		password.setText("");
 		p4.add(passwordlabel);
 		p4.add(password);
 		
 		JPanel p5 = new JPanel();
 		p5.setLayout(new FlowLayout());
-		JLabel error = new JLabel();
+		final JLabel error = new JLabel();
 		error.setForeground(Color.RED);
 		p5.add(error);
 		
@@ -219,19 +221,30 @@ public class Gui extends Thread {
 			public void actionPerformed(ActionEvent e) {
 				boolean a = false ;
 				Controller con = Controller.getInstance();
-				try {
-					a = con.mqttconnection.connectionunverschluesselt(server.getText(), port.getText());
-				} catch (MqttException e1) {
-					System.err.println(e1.getCause().toString());
+				error.setText("");
+				if(r1.isSelected()) {
+					try {
+						a = con.mqttconnection.connectionunverschluesselt(server.getText(), 
+								port.getText(),username.getText(), password.getText());
+					} catch (MqttException e1) {
+						System.err.println("gui :" + e1.getCause().toString());
+					}
+				}
+				if (r2.isSelected()) {
+					try {
+						a = con.mqttconnection.connectionverschluesselt(server.getText(), 
+								port.getText(),username.getText(), password.getText());
+					} catch (MqttException e1) {
+						System.err.println("gui :" + e1.getCause().toString());
+					}
 				}
 				if(a) {
 					frame.setVisible(true);
 					framelogin.dispose();
 				}else {
-					
+					error.setText("Keine Verbindungsaufbau möglich!");
 					return;
-				}
-				
+				}	
 			}
 		});
 		untenpanel.add(btnlogin);
