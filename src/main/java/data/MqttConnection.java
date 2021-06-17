@@ -1,13 +1,6 @@
 package data;
 
 import java.io.File;
-import java.util.UUID;
-
-import javax.net.ssl.SSLSocketFactory;
-
-import org.bouncycastle.util.Properties;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -55,9 +48,6 @@ public class MqttConnection {
 			} catch (MqttException e1) {
 				System.err.println("1Class: MqttConnection: " + e1.getMessage());
 			}
-			if (client.isConnected()) {
-				Controller.getInstance().startmsg();
-			}
 		}else if(port.matches("1884")) {
 			String ip = "tcp://" + server + ":" + port;
 			options = new MqttConnectOptions();
@@ -77,9 +67,9 @@ public class MqttConnection {
 					System.err.println("3Class: MqttConnection: " + e.getMessage());
 				}
 			}
-			if (client.isConnected()) {
-				Controller.getInstance().startmsg();
-			}
+		}
+		if (client.isConnected()) {
+			Controller.getInstance().startmsg();
 		}
 		return client.isConnected();
 	}

@@ -116,8 +116,8 @@ public class Controller {
 	
 	public void disconnect() {
 		instance.unsubscribetocurrent();
-		instance.gui.rightbottom.removeAll();
-		instance.gui.rightbottom.repaint();
+//		instance.gui.rightbottom.removeAll();
+//		instance.gui.rightbottom.repaint();
 		instance.stopmsg();
 		try {
 			mqttclient.disconnect();

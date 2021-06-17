@@ -24,7 +24,6 @@ public class MqttOnMessage extends Thread{
 					}
 					Controller.getInstance().addMessageConsole(topic, message , error);
 				}
-
 				@Override
 				public void deliveryComplete(IMqttDeliveryToken token) {
 				}

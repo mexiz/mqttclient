@@ -2,6 +2,7 @@ package vorlagen;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("hiding")
 public class ArrayListMaxSize<TopicNachrichten> extends ArrayList<TopicNachrichten> {
 
 	/*
@@ -15,11 +16,13 @@ public class ArrayListMaxSize<TopicNachrichten> extends ArrayList<TopicNachricht
 	private static final long serialVersionUID = 6759253532538061232L;
 	private static int max;
 
+	@SuppressWarnings("static-access")
 	public ArrayListMaxSize(int maxsize) {
 		this.max = maxsize;
 
 	}
 
+	@SuppressWarnings("static-access")
 	synchronized public boolean add(TopicNachrichten e) {
 		ArrayList<TopicNachrichten> test = new ArrayList<TopicNachrichten>();
 		if (super.size() == this.max) {

@@ -4,9 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -18,20 +15,18 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 import data.Controller;
 import vorlagen.TopicTable;
@@ -44,6 +39,7 @@ public class Gui extends Thread {
 	 * 
 	 */
 
+	
 	public JFrame frame;
 	public JFrame framelogin;
 	public JTextArea txt;
@@ -86,7 +82,7 @@ public class Gui extends Thread {
 		leftPanel = new JPanel();
 		leftPanel.setBorder(BorderFactory.createTitledBorder("Topic"));
 		leftPanel.setLayout(new BorderLayout());
-
+//		leftPanel.setPreferredSize(new Dimension(100, frame.getHeight()));
 		//TABLE - die Klasse TopicTable übernimmt die Topics
 		final TopicTable model = new TopicTable();
 		
@@ -134,7 +130,9 @@ public class Gui extends Thread {
 //------------------------------------------------------------------------------------------------
 // RIGHTPANEL - Panel auf der Rechten Seite
 		rightPanel = new JPanel();
-		rightPanel.setPreferredSize(new Dimension(1000, frame.getHeight()));
+//		if(frame.getWidth() < 1000) {
+//			rightPanel.setPreferredSize(new Dimension(1000, frame.getHeight()));
+//		}
 		rightPanel.setLayout(new BorderLayout());
 		rightPanel.setBorder(BorderFactory.createTitledBorder("Topic Nachrichten"));
 //------------------------------------------------------------------------------------------------
@@ -155,8 +153,8 @@ public class Gui extends Thread {
 		rightPanel.add(rightbottom);
 		rightPanel.add(sp, BorderLayout.NORTH);
 
-		contentPane.add(leftPanel, BorderLayout.CENTER);
-		contentPane.add(rightPanel, BorderLayout.EAST);
+		contentPane.add(leftPanel, BorderLayout.WEST);
+		contentPane.add(rightPanel, BorderLayout.CENTER);
 
 		frame.getContentPane().add(contentPane);
 		frame.setVisible(true);
@@ -203,63 +201,40 @@ public class Gui extends Thread {
 		
 //------------------------------------------------------------------------------------------------
 //ERRORPANEL
-		JPanel errorPanel = new JPanel();
-		errorPanel.setLayout(new FlowLayout());
+//		JPanel errorPanel = new JPanel();
+//		errorPanel.setLayout(new FlowLayout());
+//		
+//		final JLabel error = new JLabel();
+//		error.setForeground(Color.RED);
+//		error.setText("ca-cert");
+//		errorPanel.add(error);
 		
-		final JLabel error = new JLabel();
-		error.setForeground(Color.RED);
-		errorPanel.add(error);
+//		final JLabel a = new JLabel();
+//		a.setForeground(Color.RED);
+//		a.setText("client-cert");
+//		errorPanel.add(a);
+//		
+//		final JLabel b = new JLabel();
+//		b.setForeground(Color.RED);
+//		b.setText("client-key");
+//		errorPanel.add(b);
 //------------------------------------------------------------------------------------------------
 //FILESCHOOSEPANEL
 		final JPanel fileChoosePanel = new JPanel();
 		fileChoosePanel.setLayout(new FlowLayout());
 		
+		final JButton btnstnd = new JButton("Standart Zertifikate");
+		btnstnd.setForeground(Color.GREEN.darker());
+		
 		final JButton btnca = new JButton("ca-cert");
-		btnca.addActionListener(new ActionListener() {
-
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				file1 = showOpenDialog("CHOOSE FILE: " + btnca.getName());
-				Controller.getInstance();
-				Controller.mqttconnection.cacertfile = file1;
-				standardcert = false;
-				error.setText("ca-cert wurde ausgewählt!");
-			}
-		});
-		fileChoosePanel.add(btnca);
+		btnca.setForeground(Color.RED);
 		
 		final JButton btnkey = new JButton("key-cert");
-		btnkey.addActionListener(new ActionListener() {
-
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				file2 = showOpenDialog("CHOOSE FILE: " + btnkey.getName());
-				Controller.getInstance();
-				Controller.mqttconnection.clientkeyfile = file2;
-				standardcert = false;
-				error.setText("key-cert wurde ausgewählt!");
-			}
-		});
-		fileChoosePanel.add(btnkey);
+		btnkey.setForeground(Color.RED);
 		
 		final JButton btnclient = new JButton("client-cert");
-		btnclient.addActionListener(new ActionListener() {
-
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				file3 = showOpenDialog("CHOOSE FILE: " + btnclient.getName());
-				Controller.getInstance();
-				Controller.mqttconnection.clientpemfile = file3;
-				error.setText("client-cert wurde ausgewählt!");
-				standardcert = false;
-			}
-		});
-		fileChoosePanel.add(btnclient);
+		btnclient.setForeground(Color.RED);
 		
-		final JButton btnstnd = new JButton("Standart Zertifikate");
 		btnstnd.addActionListener(new ActionListener() {
 
 			@Override
@@ -271,14 +246,65 @@ public class Gui extends Thread {
 				file3 = new File("C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\client.pem");
 				Controller.getInstance();
 				Controller.mqttconnection.cacertfile = file1;
-				Controller.getInstance();
 				Controller.mqttconnection.clientkeyfile = file2;
-				Controller.getInstance();
 				Controller.mqttconnection.clientpemfile = file3;
+				btnca.setForeground(Color.RED);
+				btnkey.setForeground(Color.RED);
+				btnclient.setForeground(Color.RED);
+				btnstnd.setForeground(Color.GREEN.darker());				
 			}
 		});
-		fileChoosePanel.add(btnstnd);
+		
+		
 
+		btnca.addActionListener(new ActionListener() {
+
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				file1 = showOpenDialog("CHOOSE FILE: " + btnca.getName());
+				Controller.getInstance();
+				Controller.mqttconnection.cacertfile = file1;
+				standardcert = false;
+				btnca.setForeground(Color.GREEN.darker());
+				btnstnd.setForeground(Color.RED);
+			}
+		});
+		fileChoosePanel.add(btnca);
+		
+		btnkey.addActionListener(new ActionListener() {
+
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				file2 = showOpenDialog("CHOOSE FILE: " + btnkey.getName());
+				Controller.getInstance();
+				Controller.mqttconnection.clientkeyfile = file2;
+				standardcert = false;
+				btnkey.setForeground(Color.GREEN.darker());
+				btnstnd.setForeground(Color.RED);
+			}
+		});
+		fileChoosePanel.add(btnkey);
+		
+		btnclient.addActionListener(new ActionListener() {
+
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				file3 = showOpenDialog("CHOOSE FILE: " + btnclient.getName());
+				Controller.getInstance();
+				Controller.mqttconnection.clientpemfile = file3;
+				standardcert = false;
+				btnclient.setForeground(Color.GREEN.darker());
+				btnstnd.setForeground(Color.RED);
+
+			}
+		});
+		fileChoosePanel.add(btnclient);
+		
+
+		fileChoosePanel.add(btnstnd);
 		fileChoosePanel.setVisible(false);
 //------------------------------------------------------------------------------------------------
 //RADIOBTNPANEL
@@ -347,7 +373,7 @@ public class Gui extends Thread {
 		obenpanel.add(userPanel);
 		obenpanel.add(passwordPanel);
 		obenpanel.add(RadiobtnPanel);
-		obenpanel.add(errorPanel);
+//		obenpanel.add(errorPanel);
 		obenpanel.add(fileChoosePanel);
 //------------------------------------------------------------------------------------------------
 //UNTENPANEL
@@ -359,7 +385,7 @@ public class Gui extends Thread {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				boolean a = false;
-				error.setText("");
+//				error.setText("");
 				if (r1.isSelected()) {
 					Controller.getInstance();
 					a = Controller.mqttconnection.connectionunverschluesselt(server.getText(),
@@ -369,11 +395,12 @@ public class Gui extends Thread {
 				}
 				if (r2.isSelected()) {
 					if (standardcert) {
-						error.setText("Es wurden die Standard Zertifikate ausgewählt!");
+//						error.setText("Es wurden die Standard Zertifikate ausgewählt!");
 					} else if (!standardcert && file1 != null && file2 != null && file3 != null) {
-						error.setText("Es wurden die Zertifikate ausgewählt!");
+//						error.setText("Es wurden die Zertifikate ausgewählt!");
 					} else {
-						error.setText("Es wurden keine Zertifikate ausgewählt!");
+//						error.setText("Es wurden keine Zertifikate ausgewählt!");
+						JOptionPane.showMessageDialog(null, "Es wurden keine bzw. nicht alle Zertifikate ausgewählt!\nBitte wählen sie alle Zertifikate!" , "ERROR" , JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 					Controller.getInstance();
@@ -384,7 +411,7 @@ public class Gui extends Thread {
 					init();
 					framelogin.dispose();
 				} else {
-					error.setText("Keine Verbindungsaufbau möglich!");
+					JOptionPane.showMessageDialog(null, "Keine Verbindungsaufbau möglich!\nBitte vesuchen sie es erneut!" , "Connection" , JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}

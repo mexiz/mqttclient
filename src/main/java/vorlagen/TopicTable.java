@@ -2,6 +2,7 @@ package vorlagen;
 
 import javax.swing.table.DefaultTableModel;
 
+@SuppressWarnings("serial")
 public class TopicTable extends DefaultTableModel {
 	
 	/*
@@ -28,9 +29,9 @@ public class TopicTable extends DefaultTableModel {
 	}
 
 
-	public Class getColumnClass(int columnIndex) {
-		return String.class;
-	}
+//	public Class getColumnClass(int columnIndex) {
+//		return String.class;
+//	}
 	
 	public void addTopictoTable(String topic) {
 	}
