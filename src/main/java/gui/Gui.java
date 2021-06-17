@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.attribute.AclEntry;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -58,14 +59,23 @@ public class Gui extends Thread {
 
 //	String stndserver = "127.0.0.1";
 //	String stndserver = "192.168.0.100";
+	
 	String stndserver = "test.mosquitto.org";
 	String stndport = "1883";
+
+
+	String capath;
+	String clientkeypath;
+	String clientpath; 
 
 	public Gui() {
 		loginscreen();
 	}
 
 	private void init() {
+		capath = Controller.getInstance().mqttconnection.capath;
+		clientkeypath =Controller.getInstance().mqttconnection.clientkeypath;
+		clientpath = Controller.getInstance().mqttconnection.clientpath;
 		
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -122,7 +132,7 @@ public class Gui extends Thread {
 			public void actionPerformed(ActionEvent e) {
 				// Die Methode disconnect() unterbricht die Verbindung zum Broker
 				Controller.getInstance().disconnect();
-				loginscreen();
+				
 			}
 		});
 		leftbottomPanel.add(btndisconnect);
@@ -240,10 +250,13 @@ public class Gui extends Thread {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				standardcert = true;
-				file1 = new File("C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\ca.pem");
-				file2 = new File(
-						"C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\clientkey.pem");
-				file3 = new File("C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\client.pem");
+				try {
+					file1 = new File(capath);
+					file2 = new File(clientkeypath);
+					file3 = new File(clientpath);
+				}catch(Exception e0) {
+				}
+
 				Controller.getInstance();
 				Controller.mqttconnection.cacertfile = file1;
 				Controller.mqttconnection.clientkeyfile = file2;
@@ -317,10 +330,15 @@ public class Gui extends Thread {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				fileChoosePanel.setVisible(false);
-				file1 = new File("C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\ca.pem");
-				file2 = new File(
-						"C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\clientkey.pem");
-				file3 = new File("C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\client.pem");
+//				try {
+//					file1 = new File(capath);
+//					file2 = new File(clientkeypath);
+//					file3 = new File(clientpath);
+//				}catch(Exception e2){
+//					JOptionPane.showMessageDialog(null, " Keine Standardzertifikate!" ,
+//							"ERROR" , JOptionPane.ERROR_MESSAGE);
+//				}
+
 				Controller.getInstance();
 				Controller.mqttconnection.cacertfile = file1;
 				Controller.mqttconnection.clientkeyfile = file2;
@@ -395,12 +413,10 @@ public class Gui extends Thread {
 				}
 				if (r2.isSelected()) {
 					if (standardcert) {
-//						error.setText("Es wurden die Standard Zertifikate ausgewählt!");
 					} else if (!standardcert && file1 != null && file2 != null && file3 != null) {
-//						error.setText("Es wurden die Zertifikate ausgewählt!");
 					} else {
-//						error.setText("Es wurden keine Zertifikate ausgewählt!");
-						JOptionPane.showMessageDialog(null, "Es wurden keine bzw. nicht alle Zertifikate ausgewählt!\nBitte wählen sie alle Zertifikate!" , "ERROR" , JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Es wurden keine bzw. nicht alle Zertifikate ausgewählt!\nBitte wählen sie alle Zertifikate!" ,
+								"ERROR" , JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 					Controller.getInstance();
@@ -411,7 +427,8 @@ public class Gui extends Thread {
 					init();
 					framelogin.dispose();
 				} else {
-					JOptionPane.showMessageDialog(null, "Keine Verbindungsaufbau möglich!\nBitte vesuchen sie es erneut!" , "Connection" , JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Keine Verbindungsaufbau möglich!\nBitte vesuchen sie es erneut!" ,
+							"Connection" , JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}

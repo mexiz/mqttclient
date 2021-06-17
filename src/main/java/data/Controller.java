@@ -1,5 +1,7 @@
 package data;
 
+import javax.swing.JOptionPane;
+
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -55,17 +57,17 @@ public class Controller {
 		return instance;
 	}
 
-	public void addMessageConsole(String topic, MqttMessage nachricht , String error) {
+	public void addMessageConsole(String topic, MqttMessage nachricht) {
 		String text = "";
 		String vorlagetopic = "Topic: \"";
 		String vorlagenachricht = "\" | Nachricht: \"";
 		String vorlageende = "\n";
 		
-		stringnachricht.add(new TopicNachrichten(topic, nachricht, error));
+		stringnachricht.add(new TopicNachrichten(topic, nachricht));
 		
 		for (int i = 0; i < stringnachricht.size(); i++) {
 			text += vorlagetopic + stringnachricht.get(i).getTopic() + vorlagenachricht
-					+ stringnachricht.get(i).getnachricht().toString() + "\" | " + stringnachricht.get(i).getError().toString() + vorlageende;
+					+ stringnachricht.get(i).getnachricht().toString() + vorlageende;
 		}
 		gui.txt.setText(text);
 	}
@@ -115,14 +117,15 @@ public class Controller {
 	}
 	
 	public void disconnect() {
-		instance.unsubscribetocurrent();
-//		instance.gui.rightbottom.removeAll();
-//		instance.gui.rightbottom.repaint();
-		instance.stopmsg();
 		try {
 			mqttclient.disconnect();
 		} catch (MqttException e) {
-			e.printStackTrace();
+		}
+		if(!mqttclient.isConnected()) {
+			gui.loginscreen();
+			instance.unsubscribetocurrent();
+			instance.stopmsg();	
+			JOptionPane.showMessageDialog(null, "Verbindung wurde unterbrochen!\n Bitte erneut verbinden!" , "Connection lost" , JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	

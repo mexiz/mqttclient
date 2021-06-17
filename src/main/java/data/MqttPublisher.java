@@ -56,12 +56,12 @@ public class MqttPublisher extends Thread {
 					pub.publish(topic[3][0].toString(), acc.getBytes(), 0, false);
 					pub.publish(topic[4][0].toString(), gyro.getBytes(), 0, false);
 					pub.publish(topic[5][0].toString(), mag.getBytes(), 0, false);
-					pub.publish(topic[6][0].toString(), testm);
-					pub.publish(topic[7][0].toString(), pres.getBytes(), 0, false);
-					pub.publish(topic[8][0].toString(), hum.getBytes(), 0, false);
-					pub.publish(topic[9][0].toString(), acc.getBytes(), 0, false);
-					pub.publish(topic[10][0].toString(), gyro.getBytes(), 0, false);
-					pub.publish(topic[11][0].toString(), mag.getBytes(), 0, false);
+//					pub.publish(topic[6][0].toString(), testm);
+//					pub.publish(topic[7][0].toString(), pres.getBytes(), 0, false);
+//					pub.publish(topic[8][0].toString(), hum.getBytes(), 0, false);
+//					pub.publish(topic[9][0].toString(), acc.getBytes(), 0, false);
+//					pub.publish(topic[10][0].toString(), gyro.getBytes(), 0, false);
+//					pub.publish(topic[11][0].toString(), mag.getBytes(), 0, false);
 
 
 	
