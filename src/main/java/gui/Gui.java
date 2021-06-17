@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -48,10 +49,7 @@ public class Gui extends Thread {
 	public JTextArea txt;
 
 	public JPanel contentPane;
-
 	public JPanel leftPanel;
-
-	public JPanel centerPanel;
 
 	public JPanel rightPanel;
 	public JPanel rightbottom;
@@ -62,96 +60,114 @@ public class Gui extends Thread {
 
 	boolean standardcert = true;
 
+//	String stndserver = "127.0.0.1";
+//	String stndserver = "192.168.0.100";
+	String stndserver = "test.mosquitto.org";
+	String stndport = "1883";
+
 	public Gui() {
-		init();
 		loginscreen();
 	}
 
 	private void init() {
+		
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("MQTT: Client");
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setSize(new Dimension(frame.getWidth(), frame.getHeight()));
 
 //CONTENTPANEL
 		contentPane = new JPanel();
 		contentPane.setLayout(new BorderLayout());
-		contentPane.setBackground(Color.black.brighter());
 		contentPane.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()));
+//------------------------------------------------------------------------------------------
+//leftPanel - Panel in der Mitte zeigt die Topics in Form von einem Table an 
+		leftPanel = new JPanel();
+		leftPanel.setBorder(BorderFactory.createTitledBorder("Topic"));
+		leftPanel.setLayout(new BorderLayout());
 
-//LEFTPANEL 
-//		leftPanel = new JPanel();
-//		leftPanel.setPreferredSize(new Dimension(100, frame.getHeight()));
-//		leftPanel.setBorder(BorderFactory.createTitledBorder("optionen"));
-
-//CENTERPANEL - Panel in der Mitte zeigt die Topics in Form von einem Table an 
-		centerPanel = new JPanel();
-		centerPanel.setBorder(BorderFactory.createTitledBorder("Topic"));
-		centerPanel.setLayout(new BorderLayout());
-//TABLE - die Klasse TopicTable übernimmt die Topics
+		//TABLE - die Klasse TopicTable übernimmt die Topics
 		final TopicTable model = new TopicTable();
+		
 		final JTable table = new JTable(model);
 		table.setFont(table.getFont().deriveFont(15f));
 		table.setColumnSelectionAllowed(false);
-		table.setSelectionBackground(Color.green.brighter());
+		table.setSelectionBackground(Color.GREEN);
 		table.setRowHeight(30);
 		table.setPreferredScrollableViewportSize(new Dimension(200, 200));
 		table.setFillsViewportHeight(true);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				int i = table.getSelectedRow();
-				if (model.topics[i][0].toString() != Controller.getInstance().currentsubscribedtopic) {
-					Controller.getInstance().subscribeto(model.topics[i][0].toString());
+				if (TopicTable.topics[i][0].toString() != Controller.getInstance().currentsubscribedtopic) {
+					Controller.getInstance().subscribeto(TopicTable.topics[i][0].toString());
 				}
 			}
 		});
+		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 1), "Topic",
 				TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
-		centerPanel.add(scrollPane);
-
-////CENTERBOTTOMPANEL - CenterButtomPanel für den SubscribeButton
-//		JPanel centerbottomPanel = new JPanel();
-//		centerbottomPanel.setOpaque(true);
-//		centerbottomPanel.setBorder(BorderFactory.createTitledBorder(""));
-//		centerbottomPanel.setLayout(new BorderLayout());
-
+		
+		leftPanel.add(scrollPane);
+//---------------------------------------------------------------------------------------------------------------------
+///leftbottomPanel - CenterButtomPanel für den SubscribeButton
+		JPanel leftbottomPanel = new JPanel();
+		leftbottomPanel.setOpaque(true);
+		leftbottomPanel.setBorder(BorderFactory.createTitledBorder(""));
+		leftbottomPanel.setLayout(new BorderLayout());
+		
+		JButton btndisconnect = new JButton("disconnect client!");
+		btndisconnect.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Die Methode disconnect() unterbricht die Verbindung zum Broker
+				Controller.getInstance().disconnect();
+				loginscreen();
+			}
+		});
+		leftbottomPanel.add(btndisconnect);
+		leftPanel.add(leftbottomPanel, BorderLayout.SOUTH);
+//------------------------------------------------------------------------------------------------
 // RIGHTPANEL - Panel auf der Rechten Seite
 		rightPanel = new JPanel();
 		rightPanel.setPreferredSize(new Dimension(1000, frame.getHeight()));
 		rightPanel.setLayout(new BorderLayout());
 		rightPanel.setBorder(BorderFactory.createTitledBorder("Topic Nachrichten"));
-
+//------------------------------------------------------------------------------------------------
 //TEXTAREA - TextArea für die Empfangen Nachrichten
 		txt = new JTextArea();
 		txt.setPreferredSize(new Dimension(rightPanel.getWidth(), 265));
 		txt.setEditable(false);
 		txt.setLineWrap(false);
-
 		txt.setFont(txt.getFont().deriveFont(20f));
 		JScrollPane sp = new JScrollPane(txt);
-
+//------------------------------------------------------------------------------------------------
 // RIGHTBOTTOM - Panel auf der rechten Seite unten für die Datankurve
 		rightbottom = new JPanel();
 		rightbottom.setLayout(new BorderLayout());
 		rightbottom.setBorder(BorderFactory.createTitledBorder("Datenkurve"));
+//------------------------------------------------------------------------------------------------
 
 		rightPanel.add(rightbottom);
 		rightPanel.add(sp, BorderLayout.NORTH);
 
-		contentPane.add(centerPanel, BorderLayout.CENTER);
+		contentPane.add(leftPanel, BorderLayout.CENTER);
 		contentPane.add(rightPanel, BorderLayout.EAST);
-//		contentPane.setVisible(false);
 
 		frame.getContentPane().add(contentPane);
-		frame.pack();
-		frame.setVisible(false);
-
+		frame.setVisible(true);
 	}
 
 	public void loginscreen() {
-		frame.setVisible(false);
+		//Wenn ein Frame existiert wird er zerstört
+		if (frame != null) {
+			frame.dispose();
+		}
+//FRAMELOGIN
 		framelogin = new JFrame();
 		framelogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		framelogin.setTitle("MQTT: Connect with Server");
@@ -159,67 +175,90 @@ public class Gui extends Thread {
 		framelogin.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		framelogin.setSize(500, 300);
 		framelogin.setLocationRelativeTo(null);
-
+//------------------------------------------------------------------------------------------------
+//LOGINSCREEN
 		JPanel loginscreen = new JPanel();
 		loginscreen.setLayout(new BorderLayout());
 		loginscreen.setPreferredSize(new Dimension(framelogin.getWidth(), framelogin.getHeight()));
-
+//------------------------------------------------------------------------------------------------
+//OBENPANEL
 		JPanel obenpanel = new JPanel();
 		obenpanel.setLayout(new BoxLayout(obenpanel, BoxLayout.Y_AXIS));
 		obenpanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
-
-		JPanel p1 = new JPanel();
-		p1.setLayout(new FlowLayout());
+//------------------------------------------------------------------------------------------------
+//ADDRESSEPANEL		
+		JPanel addressePanel = new JPanel();
+		addressePanel.setLayout(new FlowLayout());
+		
 		JLabel serverlabel = new JLabel("Server-ip: ");
+		addressePanel.add(serverlabel);
+		
 		final JTextField server = new JTextField(21);
-		server.setText("test.mosquitto.org");
+		server.setText(stndserver);
+		addressePanel.add(server);
+		
 		final JTextField port = new JTextField(10);
-		port.setText("1883");
-		p1.add(serverlabel);
-		p1.add(server);
-		p1.add(port);
-
-		JPanel p5 = new JPanel();
-		p5.setLayout(new FlowLayout());
+		port.setText(stndport);
+		addressePanel.add(port);
+		
+//------------------------------------------------------------------------------------------------
+//ERRORPANEL
+		JPanel errorPanel = new JPanel();
+		errorPanel.setLayout(new FlowLayout());
+		
 		final JLabel error = new JLabel();
 		error.setForeground(Color.RED);
-		p5.add(error);
-
-		final JPanel p6 = new JPanel();
-		p6.setLayout(new FlowLayout());
+		errorPanel.add(error);
+//------------------------------------------------------------------------------------------------
+//FILESCHOOSEPANEL
+		final JPanel fileChoosePanel = new JPanel();
+		fileChoosePanel.setLayout(new FlowLayout());
+		
 		final JButton btnca = new JButton("ca-cert");
 		btnca.addActionListener(new ActionListener() {
+
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				file1 = showOpenDialog("CHOOSE FILE: " + btnca.getName());
-				Controller.getInstance().mqttconnection.cacertfile = file1;
+				Controller.getInstance();
+				Controller.mqttconnection.cacertfile = file1;
 				standardcert = false;
 				error.setText("ca-cert wurde ausgewählt!");
 			}
 		});
+		fileChoosePanel.add(btnca);
+		
 		final JButton btnkey = new JButton("key-cert");
 		btnkey.addActionListener(new ActionListener() {
+
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				file2 = showOpenDialog("CHOOSE FILE: " + btnkey.getName());
-				Controller.getInstance().mqttconnection.clientkeyfile = file2;
+				Controller.getInstance();
+				Controller.mqttconnection.clientkeyfile = file2;
 				standardcert = false;
 				error.setText("key-cert wurde ausgewählt!");
 			}
 		});
+		fileChoosePanel.add(btnkey);
+		
 		final JButton btnclient = new JButton("client-cert");
 		btnclient.addActionListener(new ActionListener() {
+
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				file3 = showOpenDialog("CHOOSE FILE: " + btnclient.getName());
-				Controller.getInstance().mqttconnection.clientpemfile = file3;
+				Controller.getInstance();
+				Controller.mqttconnection.clientpemfile = file3;
 				error.setText("client-cert wurde ausgewählt!");
 				standardcert = false;
 			}
 		});
+		fileChoosePanel.add(btnclient);
+		
 		final JButton btnstnd = new JButton("Standart Zertifikate");
 		btnstnd.addActionListener(new ActionListener() {
 
@@ -230,77 +269,90 @@ public class Gui extends Thread {
 				file2 = new File(
 						"C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\clientkey.pem");
 				file3 = new File("C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\client.pem");
-				Controller.getInstance().mqttconnection.cacertfile = file1;
-				Controller.getInstance().mqttconnection.clientkeyfile = file2;
-				Controller.getInstance().mqttconnection.clientpemfile = file3;
+				Controller.getInstance();
+				Controller.mqttconnection.cacertfile = file1;
+				Controller.getInstance();
+				Controller.mqttconnection.clientkeyfile = file2;
+				Controller.getInstance();
+				Controller.mqttconnection.clientpemfile = file3;
 			}
 		});
-		p6.add(btnca);
-		p6.add(btnkey);
-		p6.add(btnclient);
-		p6.add(btnstnd);
+		fileChoosePanel.add(btnstnd);
 
-		p6.setVisible(false);
-
-		JPanel p2 = new JPanel();
-		p2.setLayout(new FlowLayout());
-		ButtonGroup group = new ButtonGroup();
+		fileChoosePanel.setVisible(false);
+//------------------------------------------------------------------------------------------------
+//RADIOBTNPANEL
+		JPanel RadiobtnPanel = new JPanel();
+		RadiobtnPanel.setLayout(new FlowLayout());
+		
 		final JRadioButton r1 = new JRadioButton("unverschlüsselt");
 		r1.setSelected(true);
 		r1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				p6.setVisible(false);
+				fileChoosePanel.setVisible(false);
 				file1 = new File("C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\ca.pem");
 				file2 = new File(
 						"C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\clientkey.pem");
 				file3 = new File("C:\\Users\\markus\\Documents\\GitHub\\mqttclient\\mosquitto_certificate\\client.pem");
-				Controller.getInstance().mqttconnection.cacertfile = file1;
-				Controller.getInstance().mqttconnection.clientkeyfile = file2;
-				Controller.getInstance().mqttconnection.clientpemfile = file3;
+				Controller.getInstance();
+				Controller.mqttconnection.cacertfile = file1;
+				Controller.mqttconnection.clientkeyfile = file2;
+				Controller.mqttconnection.clientpemfile = file3;
 			}
 		});
-//		r1.setSelected(true);
+		
 		final JRadioButton r2 = new JRadioButton("verschlüsselt");
 		r2.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				p6.setVisible(true);
+				fileChoosePanel.setVisible(true);
 
 			}
 		});
+		
+		ButtonGroup group = new ButtonGroup();
 		group.add(r1);
 		group.add(r2);
 
-		p2.add(r1);
-		p2.add(r2);
-
-		JPanel p3 = new JPanel();
-		p3.setLayout(new FlowLayout());
+		RadiobtnPanel.add(r1);
+		RadiobtnPanel.add(r2);
+//------------------------------------------------------------------------------------------------
+//USERPANEL
+		JPanel userPanel = new JPanel();
+		userPanel.setLayout(new FlowLayout());
+		
 		JLabel usernamelabel = new JLabel("Username");
+		userPanel.add(usernamelabel);
+		
 		final JTextField username = new JTextField(20);
 		username.setText("");
-		p3.add(usernamelabel);
-		p3.add(username);
-
-		JPanel p4 = new JPanel();
-		p4.setLayout(new FlowLayout());
+		
+		userPanel.add(username);
+//------------------------------------------------------------------------------------------------
+//PASSWORDPANEL
+		JPanel passwordPanel = new JPanel();
+		passwordPanel.setLayout(new FlowLayout());
 
 		JLabel passwordlabel = new JLabel("Passwort");
+		passwordPanel.add(passwordlabel);
+		
 		final JTextField password = new JTextField(20);
 		password.setText("");
-		p4.add(passwordlabel);
-		p4.add(password);
-
-		obenpanel.add(p1);
-		obenpanel.add(p3);
-		obenpanel.add(p4);
-		obenpanel.add(p2);
-		obenpanel.add(p5);
-		obenpanel.add(p6);
-
+		passwordPanel.add(password);
+		
+		//alles wird zum obenpanel hinzugefügt
+		obenpanel.add(addressePanel);
+		obenpanel.add(userPanel);
+		obenpanel.add(passwordPanel);
+		obenpanel.add(RadiobtnPanel);
+		obenpanel.add(errorPanel);
+		obenpanel.add(fileChoosePanel);
+//------------------------------------------------------------------------------------------------
+//UNTENPANEL
 		JPanel untenpanel = new JPanel();
+		
 		JButton btnlogin = new JButton("login");
 		btnlogin.setPreferredSize(new Dimension(framelogin.getWidth() - 50, 30));
 		btnlogin.addActionListener(new ActionListener() {
@@ -309,23 +361,27 @@ public class Gui extends Thread {
 				boolean a = false;
 				error.setText("");
 				if (r1.isSelected()) {
-						a = Controller.getInstance().mqttconnection.connectionunverschluesselt(server.getText(),
-								port.getText(), username.getText(), password.getText());
+					Controller.getInstance();
+					a = Controller.mqttconnection.connectionunverschluesselt(server.getText(),
+							port.getText(), username.getText(), password.getText());
+					stndport = port.getText();
+					stndserver = server.getText();
 				}
 				if (r2.isSelected()) {
 					if (standardcert) {
 						error.setText("Es wurden die Standard Zertifikate ausgewählt!");
-					}else if (!standardcert && file1 != null &&file2 != null && file3 != null ) {
+					} else if (!standardcert && file1 != null && file2 != null && file3 != null) {
 						error.setText("Es wurden die Zertifikate ausgewählt!");
-					}else {
+					} else {
 						error.setText("Es wurden keine Zertifikate ausgewählt!");
 						return;
 					}
-					a = Controller.getInstance().mqttconnection.connectionverschluesselt(server.getText(),
-								port.getText(), username.getText(), password.getText());
+					Controller.getInstance();
+					a = Controller.mqttconnection.connectionverschluesselt(server.getText(),
+							port.getText(), username.getText(), password.getText());
 				}
 				if (a) {
-					frame.setVisible(true);
+					init();
 					framelogin.dispose();
 				} else {
 					error.setText("Keine Verbindungsaufbau möglich!");
@@ -333,6 +389,7 @@ public class Gui extends Thread {
 				}
 			}
 		});
+		
 		untenpanel.add(btnlogin);
 
 		loginscreen.add(untenpanel, BorderLayout.SOUTH);
@@ -345,7 +402,7 @@ public class Gui extends Thread {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle(filename);
 		int choice = fileChooser.showOpenDialog(null);
-		boolean f = false;
+//		boolean f = false;
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			return fileChooser.getSelectedFile();
 		}

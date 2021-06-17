@@ -17,11 +17,6 @@ public class Controller {
 	 * 
 	 */
 
-	private Controller() {
-		init();
-		mqttpublisher.start();
-//		mqttconnection.start();
-	}
 
 	static Controller instance;
 	public String test;
@@ -36,20 +31,21 @@ public class Controller {
 	public SslUtil ssl;
 	ArrayListMaxSize<TopicNachrichten> stringnachricht;
 	public int maxanzahlnachrichten = 10;
-
-	public static void main(String[] args) {
-		Controller.getInstance();
-	}
-
-	private void init() {
+	
+	private Controller() {
 		stringnachricht = new ArrayListMaxSize<TopicNachrichten>(maxanzahlnachrichten);
 		gui = new Gui();
 		mqttconnection = new MqttConnection();
 		mqttpublisher = new MqttPublisher();
 		datenkurve = new DatenKurve();
-		onMessage = new MqttOnMessage();
 		ssl = new SslUtil();
+		
 		datenkurve.start();
+		mqttpublisher.start();
+	}
+	
+	public static void main(String[] args) {
+		Controller.getInstance();
 	}
 
 	public static Controller getInstance() {
@@ -66,6 +62,7 @@ public class Controller {
 		String vorlageende = "\n";
 		
 		stringnachricht.add(new TopicNachrichten(topic, nachricht, error));
+		
 		for (int i = 0; i < stringnachricht.size(); i++) {
 			text += vorlagetopic + stringnachricht.get(i).getTopic() + vorlagenachricht
 					+ stringnachricht.get(i).getnachricht().toString() + "\" | " + stringnachricht.get(i).getError().toString() + vorlageende;
@@ -88,13 +85,12 @@ public class Controller {
 			}
 		}
 		if (issub == false) {
-			// DATENKURVE WIRD GEWECHSELT
+			// DATENCHART WIRD GEWECHSELT
 			if (datenkurve != null) {
 				datenkurve.setChart(topic);
 			}
 			try {
 				mqttclient.subscribe(topic);	
-				gui.txt.append( topic + "\n");
 				currentsubscribedtopic = topic;
 			} catch (MqttException e) {
 				System.err.println("2Class: Controller: " + e.getMessage());
@@ -103,13 +99,41 @@ public class Controller {
 			issub = true;
 		}
 	}
+	public void unsubscribetocurrent() {
+		if (issub) {
+			try {
+				mqttclient.unsubscribe(currentsubscribedtopic);
+				currentsubscribedtopic = null;
+				issub = false;
+				stringnachricht.clear();
+				gui.txt.setText("");
+			} catch (MqttException e) {
+				System.err.println("1Class: Controller: " + e.getMessage());
+			}
+		}
+		
+	}
+	
+	public void disconnect() {
+		instance.unsubscribetocurrent();
+		instance.gui.rightbottom.removeAll();
+		instance.gui.rightbottom.repaint();
+		instance.stopmsg();
+		try {
+			mqttclient.disconnect();
+		} catch (MqttException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void startmsg() {
 		mqttclient = MqttConnection.client;
+		onMessage = new MqttOnMessage();
 		onMessage.start();
 	}
 	@SuppressWarnings("deprecation")
 	public void stopmsg() {
 		onMessage.stop();
+		onMessage = null;
 	}
 }

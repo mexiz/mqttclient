@@ -6,7 +6,7 @@ public class TopicNachrichten {
 	
 	/*
 	 * 
-	 *  
+	 *  Diese Klasse übernimmt die Speicherung des Topics und der Nachricht.
 	 *
 	 * 
 	 */

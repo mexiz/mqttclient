@@ -37,37 +37,38 @@ public class SslUtil {
 			throws Exception {
 				
 		Security.addProvider(new BouncyCastleProvider());
-
-		// load CA certificate
-		X509Certificate caCert = null;
-
-		FileInputStream fis = new FileInputStream(caCrtFile);
-		BufferedInputStream bis = new BufferedInputStream(fis);
+		
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
 
+// "ca" Zertifikate wird in x509 caCert geladen
+		
+//		FileInputStream fis = new FileInputStream(caCrtFile);
+//		BufferedInputStream bis = new BufferedInputStream(fis);
+		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(caCrtFile));
+		
+		X509Certificate caCert = null;
 		while (bis.available() > 0) {
 			caCert = (X509Certificate) cf.generateCertificate(bis);
-			// System.out.println(caCert.toString());
 		}
 
-		// load client certificate
+// client Zertifikate wird in x509 caCert geladen
 		bis = new BufferedInputStream(new FileInputStream(crtFile));
+		
 		X509Certificate cert = null;
 		while (bis.available() > 0) {
 			cert = (X509Certificate) cf.generateCertificate(bis);
-			// System.out.println(caCert.toString());
 		}
 
-		// load client private key
+// clientkey wird geladen
+		
 		PEMParser pemParser = new PEMParser(new FileReader(keyFile));
 		Object object = pemParser.readObject();
-		PEMDecryptorProvider decProv = new JcePEMDecryptorProviderBuilder()
-				.build(password.toCharArray());
-		JcaPEMKeyConverter converter = new JcaPEMKeyConverter()
-				.setProvider("BC");
+		PEMDecryptorProvider decProv = new JcePEMDecryptorProviderBuilder().build(password.toCharArray());
+		JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
+		
 		KeyPair key;
 		if (object instanceof PEMEncryptedKeyPair) {
-			System.out.println("Encrypted key");
+//			System.out.println("Encrypted key");
 			key = converter.getKeyPair(((PEMEncryptedKeyPair) object)
 					.decryptKeyPair(decProv));
 		} else {
@@ -76,15 +77,15 @@ public class SslUtil {
 		}
 		pemParser.close();
 
-		// CA certificate is used to authenticate server
+// CA certificate wird benötigt um den Server zu Authentifizierung
 		KeyStore caKs = KeyStore.getInstance(KeyStore.getDefaultType());
 		caKs.load(null, null);
 		caKs.setCertificateEntry("ca-certificate", caCert);
+		
 		TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
 		tmf.init(caKs);
 
-		// client key and certificates are sent to server so it can authenticate
-		// us
+// client key und das clientzertifikat werden benötigt um den Client zu verifizieren
 		KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
 		ks.load(null, null);
 		ks.setCertificateEntry("certificate", cert);
@@ -94,7 +95,7 @@ public class SslUtil {
 				.getDefaultAlgorithm());
 		kmf.init(ks, password.toCharArray());
 
-		// finally, create SSL socket factory
+// SSL Socket wird hier erzeugt dafür wird der Keymanager und Trustmanager benötigt
 		SSLContext context = SSLContext.getInstance("TLSv1.2");
 		context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 

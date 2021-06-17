@@ -6,11 +6,12 @@ public class TopicTable extends DefaultTableModel {
 	
 	/*
 	 * 
-	 * 
+	 * In der Gui werden die Topics in Form eines Tables angezeigt.
+	 * Eventuell für manuelle in der Gui eingetragene Topics.
 	 * 
 	 */
 
-	public static String[] coloum = { "Name" };
+	public static String[] coloum = { "Name des Topics" };
 
 	public static Object[][] topics = { { "Temperature" }, { "Pressure" }, { "Humidity" }, { "Accelleration" },
 			{ "Gyrodata" }, { "Magdata" } , { "Temperature/TEST" }, { "Pressure/TEST" }, { "Humidity/TEST" }, { "Accelleration/TEST" },
@@ -30,7 +31,10 @@ public class TopicTable extends DefaultTableModel {
 	public Class getColumnClass(int columnIndex) {
 		return String.class;
 	}
-
+	
+	public void addTopictoTable(String topic) {
+	}
+	
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return false;
 	}

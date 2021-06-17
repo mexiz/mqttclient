@@ -59,5 +59,14 @@ public class DatenKurve extends Thread {
 		Controller.getInstance().gui.rightbottom.add(panelchart, BorderLayout.CENTER);
 		Controller.getInstance().gui.rightbottom.repaint();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

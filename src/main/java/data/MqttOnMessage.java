@@ -19,11 +19,8 @@ public class MqttOnMessage extends Thread{
 							JSONObject add = new JSONObject(new String(message.getPayload()));
 							Controller.getInstance().datenkurve.addData(topic, add);
 						} catch (JSONException e) {
-//							System.err.println("Catch OnMessage: " + "kein JSON");
 							error = "[kein Json-Format]";
 						}
-//						Controller.getInstance().datenkurve.addData(topic,
-//								new JSONObject(new String(message.getPayload())));
 					}
 					Controller.getInstance().addMessageConsole(topic, message , error);
 				}
