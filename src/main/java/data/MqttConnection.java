@@ -21,9 +21,9 @@ public class MqttConnection {
 	public File clientkeyfile;
 	public File clientpemfile;
 	
-	public String capath = "/mqttclient/mosquitto_zertifikate/ca.pem";
-	public String clientkeypath ="/mqttclient/mosquitto_zertifikate/clientkey.pem";
-	public String clientpath = "/mqttclient/mosquitto_zertifikate/client.pem";
+	public String capath = "zertifikate/mosquitto_certificate/ca.pem";
+	public String clientkeypath ="zertifikate/mosquitto_certificate/clientkey.pem";
+	public String clientpath = "zertifikate/mosquitto_certificate/client.pem";
 	
 	
 	public MqttConnection() {
@@ -35,6 +35,7 @@ public class MqttConnection {
 			clientkeyfile = new File(clientkeypath);
 			clientpemfile = new File(clientpath);
 		} catch (Exception e) {
+			System.out.println("not found");
 		}
 		
 	}

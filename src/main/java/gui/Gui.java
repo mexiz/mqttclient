@@ -255,6 +255,8 @@ public class Gui extends Thread {
 					file2 = new File(clientkeypath);
 					file3 = new File(clientpath);
 				}catch(Exception e0) {
+//					JOptionPane.showMessageDialog(null, " Keine Standardzertifikate!" ,
+//							"ERROR" , JOptionPane.ERROR_MESSAGE);
 				}
 
 				Controller.getInstance();
