@@ -1,11 +1,16 @@
 package data;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.util.HashMap;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
@@ -52,21 +57,20 @@ public class DatenKurve extends Thread {
 
 	private void createChartPanel(String topic, String yAchseName, TimeSeriesCollection chartcollection) {
 		XYDataset dataset = chartcollection;
-		chart = ChartFactory.createTimeSeriesChart(topic, "", "", dataset);
+		chart = ChartFactory.createTimeSeriesChart(topic, "Uhrzeit", "Wert", dataset);
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundPaint(new Color(245, 245, 245));
+		plot.setDomainGridlinePaint(Color.black);
+		plot.setRangeGridlinePaint(Color.black);
+//		plot.setOutlinePaint(Color.black);
 		panelchart = new ChartPanel(chart);
+		Controller.getInstance().gui.rightbottom = new JPanel();
+		Controller.getInstance().gui.rightPanel.add(Controller.getInstance().gui.rightbottom);
 		panelchart.setSize(Controller.getInstance().gui.rightbottom.getSize());
-		Controller.getInstance().gui.rightbottom.removeAll();
+		Controller.getInstance().gui.rightbottom.setBorder(BorderFactory.createTitledBorder(topic));
+		Controller.getInstance().gui.rightbottom.setLayout(new BorderLayout());
 		Controller.getInstance().gui.rightbottom.add(panelchart, BorderLayout.CENTER);
 		Controller.getInstance().gui.rightbottom.repaint();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 }

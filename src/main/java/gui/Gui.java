@@ -7,7 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.nio.file.attribute.AclEntry;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -61,30 +60,40 @@ public class Gui extends Thread {
 //	String stndserver = "192.168.0.100";
 	
 	String stndserver = "test.mosquitto.org";
-	String stndport = "1883";
+	String stndport = "";
 
 
 	String capath;
 	String clientkeypath;
 	String clientpath; 
+	
+//	Color black = new Color(34,40,45);
+	Color black = new Color(48, 48, 48);
+	Color blacktextarea = new Color(34, 34, 34);
+	Color black3 = new Color(30, 30, 30);
+//	Color black = new Color(5,5,25);
+//	Color black = Color.BLACK;
 
 	public Gui() {
 		loginscreen();
 	}
 
 	private void init() {
-		capath = Controller.getInstance().mqttconnection.capath;
-		clientkeypath =Controller.getInstance().mqttconnection.clientkeypath;
-		clientpath = Controller.getInstance().mqttconnection.clientpath;
+		Controller.getInstance();
+		capath = Controller.mqttconnection.capath;
+		clientkeypath =Controller.mqttconnection.clientkeypath;
+		clientpath = Controller.mqttconnection.clientpath;
 		
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("MQTT: Client");
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setSize(new Dimension(frame.getWidth(), frame.getHeight()));
+//		frame.setBackground(black);
 
 //CONTENTPANEL
 		contentPane = new JPanel();
+
 		contentPane.setLayout(new BorderLayout());
 		contentPane.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()));
 //------------------------------------------------------------------------------------------
@@ -144,8 +153,9 @@ public class Gui extends Thread {
 //			rightPanel.setPreferredSize(new Dimension(1000, frame.getHeight()));
 //		}
 		rightPanel.setLayout(new BorderLayout());
-		rightPanel.setBorder(BorderFactory.createTitledBorder("Topic Nachrichten"));
+//		rightPanel.setBorder(BorderFactory.createTitledBorder("Data"));
 //------------------------------------------------------------------------------------------------
+
 //TEXTAREA - TextArea für die Empfangen Nachrichten
 		txt = new JTextArea();
 		txt.setPreferredSize(new Dimension(rightPanel.getWidth(), 265));
@@ -154,14 +164,21 @@ public class Gui extends Thread {
 		txt.setFont(txt.getFont().deriveFont(20f));
 		JScrollPane sp = new JScrollPane(txt);
 //------------------------------------------------------------------------------------------------
+//NachrichtPanel
+		JPanel nachrichtPanel = new JPanel();
+		nachrichtPanel.setLayout(new BorderLayout());
+		nachrichtPanel.setBorder(BorderFactory.createTitledBorder("Nachrichten"));
+		nachrichtPanel.add(sp);
+		
+//------------------------------------------------------------------------------------------------		
 // RIGHTBOTTOM - Panel auf der rechten Seite unten für die Datankurve
 		rightbottom = new JPanel();
-		rightbottom.setLayout(new BorderLayout());
-		rightbottom.setBorder(BorderFactory.createTitledBorder("Datenkurve"));
+//		rightbottom.setLayout(new BorderLayout());
+//		rightbottom.setBorder(BorderFactory.createTitledBorder("Datenkurve"));
 //------------------------------------------------------------------------------------------------
 
 		rightPanel.add(rightbottom);
-		rightPanel.add(sp, BorderLayout.NORTH);
+		rightPanel.add(nachrichtPanel, BorderLayout.NORTH);
 
 		contentPane.add(leftPanel, BorderLayout.WEST);
 		contentPane.add(rightPanel, BorderLayout.CENTER);
@@ -170,6 +187,13 @@ public class Gui extends Thread {
 		frame.setVisible(true);
 	}
 
+	
+	
+	
+	
+	
+	
+	//Screen für den Loginwindow
 	public void loginscreen() {
 		//Wenn ein Frame existiert wird er zerstört
 		if (frame != null) {
@@ -186,6 +210,7 @@ public class Gui extends Thread {
 //------------------------------------------------------------------------------------------------
 //LOGINSCREEN
 		JPanel loginscreen = new JPanel();
+//		loginscreen.setBackground(black);
 		loginscreen.setLayout(new BorderLayout());
 		loginscreen.setPreferredSize(new Dimension(framelogin.getWidth(), framelogin.getHeight()));
 //------------------------------------------------------------------------------------------------
@@ -197,41 +222,37 @@ public class Gui extends Thread {
 //ADDRESSEPANEL		
 		JPanel addressePanel = new JPanel();
 		addressePanel.setLayout(new FlowLayout());
+		addressePanel.setBackground(black);
+
 		
-		JLabel serverlabel = new JLabel("Server-ip: ");
+		JLabel serverlabel = new JLabel("Addresse: ");
+		serverlabel.setForeground(Color.WHITE);
+		serverlabel.setBackground(black);
+
 		addressePanel.add(serverlabel);
 		
 		final JTextField server = new JTextField(21);
+		server.setForeground(Color.white);
+		server.setBackground(black);
+		server.setHorizontalAlignment(JTextField.CENTER);
 		server.setText(stndserver);
+		server.setBorder(BorderFactory.createEtchedBorder(0));
 		addressePanel.add(server);
 		
 		final JTextField port = new JTextField(10);
+		port.setForeground(Color.white);
+		port.setBackground(black);
+		port.setHorizontalAlignment(JTextField.CENTER);
+		port.setText(stndserver);
+		port.setBorder(BorderFactory.createEtchedBorder(0));
 		port.setText(stndport);
 		addressePanel.add(port);
 		
 //------------------------------------------------------------------------------------------------
-//ERRORPANEL
-//		JPanel errorPanel = new JPanel();
-//		errorPanel.setLayout(new FlowLayout());
-//		
-//		final JLabel error = new JLabel();
-//		error.setForeground(Color.RED);
-//		error.setText("ca-cert");
-//		errorPanel.add(error);
-		
-//		final JLabel a = new JLabel();
-//		a.setForeground(Color.RED);
-//		a.setText("client-cert");
-//		errorPanel.add(a);
-//		
-//		final JLabel b = new JLabel();
-//		b.setForeground(Color.RED);
-//		b.setText("client-key");
-//		errorPanel.add(b);
-//------------------------------------------------------------------------------------------------
 //FILESCHOOSEPANEL
 		final JPanel fileChoosePanel = new JPanel();
 		fileChoosePanel.setLayout(new FlowLayout());
+		fileChoosePanel.setBackground(black);
 		
 		final JButton btnstnd = new JButton("Standart Zertifikate");
 		btnstnd.setForeground(Color.GREEN.darker());
@@ -322,25 +343,59 @@ public class Gui extends Thread {
 		fileChoosePanel.add(btnstnd);
 		fileChoosePanel.setVisible(false);
 //------------------------------------------------------------------------------------------------
+//USERPANEL
+		JPanel userPanel = new JPanel();
+		userPanel.setLayout(new FlowLayout());
+		userPanel.setBackground(black);
+		
+		JLabel usernamelabel = new JLabel("Username");
+		usernamelabel.setForeground(Color.WHITE);
+		userPanel.add(usernamelabel);
+		
+		final JTextField username = new JTextField(20);
+		username.setForeground(Color.white);
+		username.setBackground(black);
+		username.setHorizontalAlignment(JTextField.CENTER);
+		username.setText(stndserver);
+		username.setBorder(BorderFactory.createEtchedBorder(0));
+		username.setText("");
+		
+		userPanel.add(username);
+//------------------------------------------------------------------------------------------------
+//PASSWORDPANEL
+		JPanel passwordPanel = new JPanel();
+		passwordPanel.setBackground(black);
+		
+		passwordPanel.setLayout(new FlowLayout());
+
+		JLabel passwordlabel = new JLabel("Passwort");
+		passwordlabel.setForeground(Color.WHITE);
+		passwordPanel.add(passwordlabel);
+		
+		final JTextField password = new JTextField(20);
+
+		password.setForeground(Color.white);
+		password.setBackground(black);
+		password.setHorizontalAlignment(JTextField.CENTER);
+		password.setText(stndserver);
+		password.setBorder(BorderFactory.createEtchedBorder(0));
+		password.setText("");
+		passwordPanel.add(password);
+//-------------------------------------------------------------------------------------------------
 //RADIOBTNPANEL
 		JPanel RadiobtnPanel = new JPanel();
 		RadiobtnPanel.setLayout(new FlowLayout());
+		RadiobtnPanel.setBackground(black);
 		
-		final JRadioButton r1 = new JRadioButton("unverschlüsselt");
-		r1.setSelected(true);
-		r1.addActionListener(new ActionListener() {
+		final JRadioButton runencrypted = new JRadioButton("unverschlüsselt");
+		runencrypted.setBackground(black);
+		runencrypted.setForeground(Color.WHITE);
+		runencrypted.setSelected(true);
+		runencrypted.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				fileChoosePanel.setVisible(false);
-//				try {
-//					file1 = new File(capath);
-//					file2 = new File(clientkeypath);
-//					file3 = new File(clientpath);
-//				}catch(Exception e2){
-//					JOptionPane.showMessageDialog(null, " Keine Standardzertifikate!" ,
-//							"ERROR" , JOptionPane.ERROR_MESSAGE);
-//				}
-
+				
 				Controller.getInstance();
 				Controller.mqttconnection.cacertfile = file1;
 				Controller.mqttconnection.clientkeyfile = file2;
@@ -348,8 +403,10 @@ public class Gui extends Thread {
 			}
 		});
 		
-		final JRadioButton r2 = new JRadioButton("verschlüsselt");
-		r2.addActionListener(new ActionListener() {
+		final JRadioButton rencrypted = new JRadioButton("verschlüsselt");
+		rencrypted.setBackground(black);
+		rencrypted.setForeground(Color.WHITE);
+		rencrypted.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -359,35 +416,12 @@ public class Gui extends Thread {
 		});
 		
 		ButtonGroup group = new ButtonGroup();
-		group.add(r1);
-		group.add(r2);
+		group.add(runencrypted);
+		group.add(rencrypted);
 
-		RadiobtnPanel.add(r1);
-		RadiobtnPanel.add(r2);
+		RadiobtnPanel.add(runencrypted);
+		RadiobtnPanel.add(rencrypted);
 //------------------------------------------------------------------------------------------------
-//USERPANEL
-		JPanel userPanel = new JPanel();
-		userPanel.setLayout(new FlowLayout());
-		
-		JLabel usernamelabel = new JLabel("Username");
-		userPanel.add(usernamelabel);
-		
-		final JTextField username = new JTextField(20);
-		username.setText("");
-		
-		userPanel.add(username);
-//------------------------------------------------------------------------------------------------
-//PASSWORDPANEL
-		JPanel passwordPanel = new JPanel();
-		passwordPanel.setLayout(new FlowLayout());
-
-		JLabel passwordlabel = new JLabel("Passwort");
-		passwordPanel.add(passwordlabel);
-		
-		final JTextField password = new JTextField(20);
-		password.setText("");
-		passwordPanel.add(password);
-		
 		//alles wird zum obenpanel hinzugefügt
 		obenpanel.add(addressePanel);
 		obenpanel.add(userPanel);
@@ -405,15 +439,25 @@ public class Gui extends Thread {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				boolean a = false;
-//				error.setText("");
-				if (r1.isSelected()) {
+				if (runencrypted.isSelected()) {
+					
+					if(port.getText().matches("") && username.getText().matches("") && password.getText().matches("")) {
+						
+						port.setText("1883");
+					}else if(port.getText().matches("")){
+						port.setText("1884");
+					}
+						
 					Controller.getInstance();
 					a = Controller.mqttconnection.connectionunverschluesselt(server.getText(),
 							port.getText(), username.getText(), password.getText());
-					stndport = port.getText();
 					stndserver = server.getText();
 				}
-				if (r2.isSelected()) {
+				if (rencrypted.isSelected()) {
+					if(port.getText().matches("")) {
+						port.setText("8883");
+					}
+					
 					if (standardcert) {
 					} else if (!standardcert && file1 != null && file2 != null && file3 != null) {
 					} else {
@@ -438,6 +482,8 @@ public class Gui extends Thread {
 		
 		untenpanel.add(btnlogin);
 
+		untenpanel.setBackground(black);
+		obenpanel.setBackground(black);
 		loginscreen.add(untenpanel, BorderLayout.SOUTH);
 		loginscreen.add(obenpanel, BorderLayout.CENTER);
 		framelogin.getContentPane().add(loginscreen);
@@ -447,8 +493,10 @@ public class Gui extends Thread {
 	private File showOpenDialog(String filename) {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle(filename);
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		fileChooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.updateUI();
 		int choice = fileChooser.showOpenDialog(null);
-//		boolean f = false;
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			return fileChooser.getSelectedFile();
 		}

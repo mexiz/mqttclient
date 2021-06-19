@@ -16,7 +16,7 @@ public class DataCollection {
 	 * 
 	 * Die Klasse übernimmt die Werte für die Datenkurve.
 	 * Es wird in der Klasse DatenKurve ein Objekt von DataCollection erzeugt um die
-	 * TimeSeries und TimeCollection zu Speichern.
+	 * TimeSeries und TimeCollection zu speichern.
 	 * 
 	 */
 
@@ -27,8 +27,8 @@ public class DataCollection {
 	}
 
 	public void addDataSeries(Second s, JSONObject json) {
-		int i = 0;
 		try {
+			int i = 0;
 			for (String key : json.keySet()) {
 				if (series.size() == i) {
 					if (i == 0)

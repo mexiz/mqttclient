@@ -27,11 +27,6 @@ public class TopicTable extends DefaultTableModel {
 	public TopicTable() {
 		super(topics, coloum);
 	}
-
-
-//	public Class getColumnClass(int columnIndex) {
-//		return String.class;
-//	}
 	
 	public void addTopictoTable(String topic) {
 	}
