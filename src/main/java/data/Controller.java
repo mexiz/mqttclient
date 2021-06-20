@@ -1,10 +1,13 @@
 package data;
 
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import com.formdev.flatlaf.FlatDarkLaf;
 
 import gui.Gui;
 import vorlagen.ArrayListMaxSize;
@@ -47,6 +50,13 @@ public class Controller {
 	}
 	
 	public static void main(String[] args) {
+		
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+            } catch (Exception e54) {
+            	System.out.println("geht net");
+            }
+        
 		Controller.getInstance();
 	}
 
@@ -122,7 +132,7 @@ public class Controller {
 		} catch (MqttException e) {
 		}
 		if(!mqttclient.isConnected()) {
-			gui.loginscreen();
+			
 			instance.unsubscribetocurrent();
 			instance.stopmsg();	
 			JOptionPane.showMessageDialog(null, "Verbindung wurde unterbrochen!\n Bitte erneut verbinden!" , "Connection lost" , JOptionPane.ERROR_MESSAGE);

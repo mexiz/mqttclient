@@ -42,10 +42,10 @@ public class MqttPublisher extends Thread {
 					String temp = "{'temp': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + "}";
 					String pres = "{'press': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + "}";
 					String hum = "{'humidity': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + "}";
-					String w = ", " + "'temp': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" ;
-					String q = ", " + "'q': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" ;
-					String e = ", " + "'e': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" ;
-					String t = "{'temp': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + w + q + e+ "}";
+//					String w = ", " + "'temp': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" ;
+//					String q = ", " + "'q': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" ;
+//					String e = ", " + "'e': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" ;
+//					String t = "{'temp': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + w + q + e+ "}";
 
 //					MqttMessage testm = new MqttMessage(t.getBytes());
 					

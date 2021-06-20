@@ -62,7 +62,6 @@ public class DatenKurve extends Thread {
 		plot.setBackgroundPaint(new Color(245, 245, 245));
 		plot.setDomainGridlinePaint(Color.black);
 		plot.setRangeGridlinePaint(Color.black);
-//		plot.setOutlinePaint(Color.black);
 		panelchart = new ChartPanel(chart);
 		Controller.getInstance().gui.rightbottom = new JPanel();
 		Controller.getInstance().gui.rightPanel.add(Controller.getInstance().gui.rightbottom);

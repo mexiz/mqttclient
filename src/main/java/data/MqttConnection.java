@@ -42,7 +42,6 @@ public class MqttConnection {
 	public boolean connectionunverschluesselt(String server, String port, String username, String passwort){
 
 		MqttConnectOptions options;
-		
 		if(port.matches("1883")) {
 			String ip = "tcp://" + server + ":" + port;
 			options = new MqttConnectOptions();

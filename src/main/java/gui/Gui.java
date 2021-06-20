@@ -15,21 +15,29 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 
 import data.Controller;
 import vorlagen.TopicTable;
+
+
 
 public class Gui extends Thread {
 
@@ -39,7 +47,7 @@ public class Gui extends Thread {
 	 * 
 	 */
 
-	
+
 	public JFrame frame;
 	public JFrame framelogin;
 	public JTextArea txt;
@@ -67,13 +75,6 @@ public class Gui extends Thread {
 	String clientkeypath;
 	String clientpath; 
 	
-//	Color black = new Color(34,40,45);
-	Color black = new Color(48, 48, 48);
-	Color blacktextarea = new Color(34, 34, 34);
-	Color black3 = new Color(30, 30, 30);
-//	Color black = new Color(5,5,25);
-//	Color black = Color.BLACK;
-
 	public Gui() {
 		loginscreen();
 	}
@@ -86,10 +87,13 @@ public class Gui extends Thread {
 		
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setTitle("MQTT: Client");
+		frame.setTitle("Client");
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setSize(new Dimension(frame.getWidth(), frame.getHeight()));
-//		frame.setBackground(black);
+		
+
+	
+
 
 //CONTENTPANEL
 		contentPane = new JPanel();
@@ -101,14 +105,13 @@ public class Gui extends Thread {
 		leftPanel = new JPanel();
 		leftPanel.setBorder(BorderFactory.createTitledBorder("Topic"));
 		leftPanel.setLayout(new BorderLayout());
-//		leftPanel.setPreferredSize(new Dimension(100, frame.getHeight()));
 		//TABLE - die Klasse TopicTable übernimmt die Topics
 		final TopicTable model = new TopicTable();
 		
 		final JTable table = new JTable(model);
 		table.setFont(table.getFont().deriveFont(15f));
 		table.setColumnSelectionAllowed(false);
-		table.setSelectionBackground(Color.GREEN);
+//		table.setSelectionBackground(new Color(0,204,102));
 		table.setRowHeight(30);
 		table.setPreferredScrollableViewportSize(new Dimension(200, 200));
 		table.setFillsViewportHeight(true);
@@ -141,6 +144,7 @@ public class Gui extends Thread {
 			public void actionPerformed(ActionEvent e) {
 				// Die Methode disconnect() unterbricht die Verbindung zum Broker
 				Controller.getInstance().disconnect();
+				loginscreen();
 				
 			}
 		});
@@ -158,7 +162,7 @@ public class Gui extends Thread {
 
 //TEXTAREA - TextArea für die Empfangen Nachrichten
 		txt = new JTextArea();
-		txt.setPreferredSize(new Dimension(rightPanel.getWidth(), 265));
+		txt.setPreferredSize(new Dimension(rightPanel.getWidth(), txt.getFont().getSize()*23));
 		txt.setEditable(false);
 		txt.setLineWrap(false);
 		txt.setFont(txt.getFont().deriveFont(20f));
@@ -183,7 +187,20 @@ public class Gui extends Thread {
 		contentPane.add(leftPanel, BorderLayout.WEST);
 		contentPane.add(rightPanel, BorderLayout.CENTER);
 
+		
+		JMenuBar bar = new JMenuBar();
+		
+		JMenu menu = new JMenu("TEST");
+		menu.add(new JMenuItem("test"));
+		
+		bar.add(menu);
+		
+//		frame.setResizable(false);
+		
+		frame.setJMenuBar(bar);
 		frame.getContentPane().add(contentPane);
+		
+		
 		frame.setVisible(true);
 	}
 
@@ -210,7 +227,6 @@ public class Gui extends Thread {
 //------------------------------------------------------------------------------------------------
 //LOGINSCREEN
 		JPanel loginscreen = new JPanel();
-//		loginscreen.setBackground(black);
 		loginscreen.setLayout(new BorderLayout());
 		loginscreen.setPreferredSize(new Dimension(framelogin.getWidth(), framelogin.getHeight()));
 //------------------------------------------------------------------------------------------------
@@ -222,26 +238,30 @@ public class Gui extends Thread {
 //ADDRESSEPANEL		
 		JPanel addressePanel = new JPanel();
 		addressePanel.setLayout(new FlowLayout());
-		addressePanel.setBackground(black);
+//		addressePanel.setBackground(blackpanel);
+		
 
 		
 		JLabel serverlabel = new JLabel("Addresse: ");
-		serverlabel.setForeground(Color.WHITE);
-		serverlabel.setBackground(black);
+//		serverlabel.setForeground(Color.WHITE);
+//		serverlabel.setBackground(blackpanel);
+		
 
 		addressePanel.add(serverlabel);
 		
 		final JTextField server = new JTextField(21);
-		server.setForeground(Color.white);
-		server.setBackground(black);
+//		server.setForeground(Color.white);
+//		server.setBackground(blacktextarea);
+		
 		server.setHorizontalAlignment(JTextField.CENTER);
 		server.setText(stndserver);
 		server.setBorder(BorderFactory.createEtchedBorder(0));
 		addressePanel.add(server);
 		
 		final JTextField port = new JTextField(10);
-		port.setForeground(Color.white);
-		port.setBackground(black);
+//		port.setForeground(Color.white);
+//		port.setBackground(blacktextarea);
+		
 		port.setHorizontalAlignment(JTextField.CENTER);
 		port.setText(stndserver);
 		port.setBorder(BorderFactory.createEtchedBorder(0));
@@ -252,7 +272,7 @@ public class Gui extends Thread {
 //FILESCHOOSEPANEL
 		final JPanel fileChoosePanel = new JPanel();
 		fileChoosePanel.setLayout(new FlowLayout());
-		fileChoosePanel.setBackground(black);
+//		fileChoosePanel.setBackground(blackpanel);
 		
 		final JButton btnstnd = new JButton("Standart Zertifikate");
 		btnstnd.setForeground(Color.GREEN.darker());
@@ -346,15 +366,17 @@ public class Gui extends Thread {
 //USERPANEL
 		JPanel userPanel = new JPanel();
 		userPanel.setLayout(new FlowLayout());
-		userPanel.setBackground(black);
+//		userPanel.setBackground(blackpanel);
+		
 		
 		JLabel usernamelabel = new JLabel("Username");
-		usernamelabel.setForeground(Color.WHITE);
+//		usernamelabel.setForeground(Color.WHITE);
+		
 		userPanel.add(usernamelabel);
 		
 		final JTextField username = new JTextField(20);
-		username.setForeground(Color.white);
-		username.setBackground(black);
+//		username.setForeground(Color.white);
+//		username.setBackground(blacktextarea);
 		username.setHorizontalAlignment(JTextField.CENTER);
 		username.setText(stndserver);
 		username.setBorder(BorderFactory.createEtchedBorder(0));
@@ -364,18 +386,19 @@ public class Gui extends Thread {
 //------------------------------------------------------------------------------------------------
 //PASSWORDPANEL
 		JPanel passwordPanel = new JPanel();
-		passwordPanel.setBackground(black);
+//		passwordPanel.setBackground(blackpanel);
+//		passwordlabel.setForeground(Color.WHITE);
 		
 		passwordPanel.setLayout(new FlowLayout());
 
 		JLabel passwordlabel = new JLabel("Passwort");
-		passwordlabel.setForeground(Color.WHITE);
+//		passwordlabel.setForeground(Color.WHITE);
 		passwordPanel.add(passwordlabel);
 		
-		final JTextField password = new JTextField(20);
+		final JPasswordField password = new JPasswordField(20);
 
-		password.setForeground(Color.white);
-		password.setBackground(black);
+//		password.setForeground(Color.white);
+//		password.setBackground(blacktextarea);
 		password.setHorizontalAlignment(JTextField.CENTER);
 		password.setText(stndserver);
 		password.setBorder(BorderFactory.createEtchedBorder(0));
@@ -385,11 +408,11 @@ public class Gui extends Thread {
 //RADIOBTNPANEL
 		JPanel RadiobtnPanel = new JPanel();
 		RadiobtnPanel.setLayout(new FlowLayout());
-		RadiobtnPanel.setBackground(black);
+//		RadiobtnPanel.setBackground(blackpanel);
 		
 		final JRadioButton runencrypted = new JRadioButton("unverschlüsselt");
-		runencrypted.setBackground(black);
-		runencrypted.setForeground(Color.WHITE);
+//		runencrypted.setBackground(blackpanel);
+//		runencrypted.setForeground(Color.WHITE);
 		runencrypted.setSelected(true);
 		runencrypted.addActionListener(new ActionListener() {
 			@Override
@@ -404,8 +427,8 @@ public class Gui extends Thread {
 		});
 		
 		final JRadioButton rencrypted = new JRadioButton("verschlüsselt");
-		rencrypted.setBackground(black);
-		rencrypted.setForeground(Color.WHITE);
+//		rencrypted.setBackground(blackpanel);
+//		rencrypted.setForeground(Color.WHITE);
 		rencrypted.addActionListener(new ActionListener() {
 
 			@Override
@@ -427,7 +450,6 @@ public class Gui extends Thread {
 		obenpanel.add(userPanel);
 		obenpanel.add(passwordPanel);
 		obenpanel.add(RadiobtnPanel);
-//		obenpanel.add(errorPanel);
 		obenpanel.add(fileChoosePanel);
 //------------------------------------------------------------------------------------------------
 //UNTENPANEL
@@ -469,6 +491,9 @@ public class Gui extends Thread {
 					a = Controller.mqttconnection.connectionverschluesselt(server.getText(),
 							port.getText(), username.getText(), password.getText());
 				}
+				
+
+				
 				if (a) {
 					init();
 					framelogin.dispose();
@@ -477,13 +502,13 @@ public class Gui extends Thread {
 							"Connection" , JOptionPane.ERROR_MESSAGE);
 					return;
 				}
+				
+
 			}
 		});
 		
 		untenpanel.add(btnlogin);
-
-		untenpanel.setBackground(black);
-		obenpanel.setBackground(black);
+		
 		loginscreen.add(untenpanel, BorderLayout.SOUTH);
 		loginscreen.add(obenpanel, BorderLayout.CENTER);
 		framelogin.getContentPane().add(loginscreen);
