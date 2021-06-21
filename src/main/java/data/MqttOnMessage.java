@@ -29,7 +29,6 @@ public class MqttOnMessage extends Thread{
 
 				@Override
 				public void connectionLost(Throwable cause) {
-					System.out.println("lost");
 					Controller.getInstance().disconnect();
 
 				}

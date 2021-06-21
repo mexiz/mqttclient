@@ -16,14 +16,14 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.json.JSONObject;
 
-import vorlagen.DataCollection;
-import vorlagen.TopicTable;
+import utils.DataCollection;
+import utils.TopicTable;
 
-public class DatenKurve extends Thread {
+public class Chart extends Thread {
 
 	/*
 	 * 
-	 * 
+	 *  Chart für die Datanangabe
 	 * 
 	 */
 
@@ -35,7 +35,7 @@ public class DatenKurve extends Thread {
 
 	boolean save = false;
 
-	public DatenKurve() {
+	public Chart() {
 		collectionliste = new HashMap<String, DataCollection>();
 		for (int i = 0; i < TopicTable.topics.length; i++) {
 			collectionliste.put(TopicTable.topics[i][0].toString(), new DataCollection());

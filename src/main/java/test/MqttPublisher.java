@@ -1,9 +1,10 @@
-package data;
+package test;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-import vorlagen.TopicTable;
+import utils.TopicTable;
 
 public class MqttPublisher extends Thread {
 
@@ -12,14 +13,15 @@ public class MqttPublisher extends Thread {
 	 * TEST PUBLISH
 	 * 
 	 */
+	
 	MqttClient pub;
+	
 	@Override
 	public void run() {
 		
 		try {
-			
-			pub = new MqttClient("tcp://test.mosquitto.org:1883", "zuba_pub_unencrypted");
-//			pub = new MqttClient("tcp://127.0.0.1:1883", "zupa_pub_unencrypted");
+			MemoryPersistence persistence = new MemoryPersistence();
+			pub = new MqttClient("tcp://test.mosquitto.org:1883", "zuba_pub_unencrypted", persistence);
 			pub.connect();
 			if (pub.isConnected()) {
 				
@@ -47,8 +49,9 @@ public class MqttPublisher extends Thread {
 //					String e = ", " + "'e': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" ;
 //					String t = "{'temp': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + w + q + e+ "}";
 
-//					MqttMessage testm = new MqttMessage(t.getBytes());
+//					MqttMessage testm = new MqttMessage(t.getBytes());^
 					
+					pub.publish("Temperatur", temp.getBytes(), 0, false);
 					pub.publish(topic[0][0].toString(), temp.getBytes(), 0, false);
 					pub.publish(topic[1][0].toString(), pres.getBytes(), 0, false);
 					pub.publish(topic[2][0].toString(), hum.getBytes(), 0, false);

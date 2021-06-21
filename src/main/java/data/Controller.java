@@ -1,27 +1,20 @@
 package data;
 
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
-import gui.Gui;
-import vorlagen.ArrayListMaxSize;
-import vorlagen.TopicNachrichten;
-import zertifikat.SslUtil;
+import certificate.SslUtil;
+import test.MqttPublisher;
+import ui.Gui;
+import utils.ArrayListMaxSize;
+import utils.TopicMessage;
 
 public class Controller {
-
-	/*
-	 * 
-	 * 
-	 * 
-	 */
-
 
 	static Controller instance;
 	public String test;
@@ -29,20 +22,20 @@ public class Controller {
 	public static MqttConnection mqttconnection;
 	public MqttPublisher mqttpublisher;
 	public MqttClient mqttclient;
-	public DatenKurve datenkurve;
+	public Chart datenkurve;
 	boolean issub;
 	public String currentsubscribedtopic;
 	public MqttOnMessage onMessage;
 	public SslUtil ssl;
-	ArrayListMaxSize<TopicNachrichten> stringnachricht;
-	public int maxanzahlnachrichten = 10;
+	ArrayListMaxSize<TopicMessage> stringnachricht;
+	public int maxSizeMessage = 10;
 	
 	private Controller() {
-		stringnachricht = new ArrayListMaxSize<TopicNachrichten>(maxanzahlnachrichten);
+		stringnachricht = new ArrayListMaxSize<TopicMessage>(maxSizeMessage);
 		gui = new Gui();
 		mqttconnection = new MqttConnection();
 		mqttpublisher = new MqttPublisher();
-		datenkurve = new DatenKurve();
+		datenkurve = new Chart();
 		ssl = new SslUtil();
 		
 		datenkurve.start();
@@ -50,12 +43,10 @@ public class Controller {
 	}
 	
 	public static void main(String[] args) {
-		
+	
         try {
-            UIManager.setLookAndFeel(new FlatDarkLaf());
-            } catch (Exception e54) {
-            	System.out.println("geht net");
-            }
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception e54) {}
         
 		Controller.getInstance();
 	}
@@ -73,7 +64,7 @@ public class Controller {
 		String vorlagenachricht = "\" | Nachricht: \"";
 		String vorlageende = "\n";
 		
-		stringnachricht.add(new TopicNachrichten(topic, nachricht));
+		stringnachricht.add(new TopicMessage(topic, nachricht));
 		
 		for (int i = 0; i < stringnachricht.size(); i++) {
 			text += vorlagetopic + stringnachricht.get(i).getTopic() + vorlagenachricht
@@ -135,7 +126,7 @@ public class Controller {
 			
 			instance.unsubscribetocurrent();
 			instance.stopmsg();	
-			JOptionPane.showMessageDialog(null, "Verbindung wurde unterbrochen!\n Bitte erneut verbinden!" , "Connection lost" , JOptionPane.ERROR_MESSAGE);
+//			JOptionPane.showMessageDialog(null, "Verbindung wurde unterbrochen!\n Bitte erneut verbinden!" , "Connection lost" , JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	

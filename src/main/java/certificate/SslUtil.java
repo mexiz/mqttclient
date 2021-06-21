@@ -1,4 +1,4 @@
-package zertifikat;
+package certificate;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -35,16 +35,20 @@ public class SslUtil {
 	public SSLSocketFactory getSocketFactory(final String caCrtFile, final String crtFile,final  String keyFile, 
 			final String password)
 			throws Exception {
-				
+			
+		System.out.println(caCrtFile);
+		System.out.println(crtFile);
+		System.out.println(keyFile);
+		
 		Security.addProvider(new BouncyCastleProvider());
 		
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
 
 // "ca" Zertifikate wird in x509 caCert geladen
-		
-//		FileInputStream fis = new FileInputStream(caCrtFile);
-//		BufferedInputStream bis = new BufferedInputStream(fis);
-		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(caCrtFile));
+		 FileInputStream fis = new FileInputStream(caCrtFile);
+	     BufferedInputStream bis = new BufferedInputStream(fis);
+	     cf = CertificateFactory.getInstance("X.509");
+//		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(caCrtFile));
 		
 		X509Certificate caCert = null;
 		while (bis.available() > 0) {
@@ -68,11 +72,11 @@ public class SslUtil {
 		
 		KeyPair key;
 		if (object instanceof PEMEncryptedKeyPair) {
-//			System.out.println("Encrypted key");
+			System.out.println("Encrypted key");
 			key = converter.getKeyPair(((PEMEncryptedKeyPair) object)
 					.decryptKeyPair(decProv));
 		} else {
-//			System.out.println("Unencrypted key - no password needed");
+			System.out.println("Unencrypted key - no password needed");
 			key = converter.getKeyPair((PEMKeyPair) object);
 		}
 		pemParser.close();

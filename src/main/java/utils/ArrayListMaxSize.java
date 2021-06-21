@@ -1,4 +1,4 @@
-package vorlagen;
+package utils;
 
 import java.util.ArrayList;
 
@@ -24,32 +24,32 @@ public class ArrayListMaxSize<TopicNachrichten> extends ArrayList<TopicNachricht
 
 	@SuppressWarnings("static-access")
 	synchronized public boolean add(TopicNachrichten e) {
+		//ein Array zum Zwischenspeichern wird erzeugt
 		ArrayList<TopicNachrichten> test = new ArrayList<TopicNachrichten>();
+		
+		//Abfrage ob die Arraylist den maxsize Wert erreicht hat
 		if (super.size() == this.max) {
+			//Alle Werte (außer der 1. Wert) werden im Zwischenspeicher Arraylist gesetzt
 			for (int i = 0; i < max - 1; i++) {
-
 				test.add(this.get(i + 1));
-//				System.out.println("Testsize " + test.size() + " Arrraysize " + this.size()) ;
-
 			}
-
+			
+			//Sicherheitsabfrage (nicht wichtig)
 			if (test.size() == this.size() - 1) {
-//				System.out.println("ARRAY: " + test.size() + "  =  " + (this.size()-1) );
+				//die Arraylist wird cleared
 				this.clear();
 			} else {
-
-//				System.out.println("ArrayListProjekt fail 1");
 				return true;
 			}
-
+			
+			// Zurück geschrieben
 			for (int i = 0; i < max - 1; i++) {
-
 				this.add(test.get(i));
-//				System.out.println("nach forschleife size " + this.size());
 
 			}
 
 		}
+		//hier wird der neue Wert geadded
 		return super.add(e);
 	}
 

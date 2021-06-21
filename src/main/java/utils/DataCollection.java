@@ -1,4 +1,4 @@
-package vorlagen;
+package utils;
 
 import java.util.ArrayList;
 
@@ -30,14 +30,18 @@ public class DataCollection {
 		try {
 			int i = 0;
 			for (String key : json.keySet()) {
+				//Neue Timeseries werden zur Arraylist hinzugefügt wenn keine vorhanden sind
 				if (series.size() == i) {
+					//first run
 					if (i == 0)
 						collection.removeAllSeries();
 					TimeSeries add = new TimeSeries(key);
-					add.setMaximumItemCount(Controller.getInstance().maxanzahlnachrichten);
+					//Es werden nur 10 Werte im Chart angezeigt
+					add.setMaximumItemCount(Controller.getInstance().maxSizeMessage);
 					series.add(add);
 					collection.addSeries(series.get(i));
 				}
+				//Hier werden die Werte in die Series gesetzt
 				series.get(i).add(s, json.getDouble(key));
 				i++;
 			}

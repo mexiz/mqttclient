@@ -1,4 +1,4 @@
-package gui;
+package ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -33,20 +32,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import data.Controller;
-import vorlagen.TopicTable;
-
-
+import utils.TopicTable;
 
 public class Gui extends Thread {
-
-	/*
-	 * 
-	 * 
-	 * 
-	 */
-
 
 	public JFrame frame;
 	public JFrame framelogin;
@@ -58,60 +49,96 @@ public class Gui extends Thread {
 	public JPanel rightPanel;
 	public JPanel rightbottom;
 
-	File file1 = null;
-	File file2 = null;
-	File file3 = null;
-
 	boolean standardcert = true;
 
 //	String stndserver = "127.0.0.1";
 //	String stndserver = "192.168.0.100";
-	
+
 	String stndserver = "test.mosquitto.org";
 	String stndport = "";
 
-
 	String capath;
 	String clientkeypath;
-	String clientpath; 
-	
+	String clientpath;
+
 	public Gui() {
-		loginscreen();
+		loginscreeninit();
 	}
 
-	private void init() {
+	private void mainscreeninit() {
 		Controller.getInstance();
-		capath = Controller.mqttconnection.capath;
-		clientkeypath =Controller.mqttconnection.clientkeypath;
-		clientpath = Controller.mqttconnection.clientpath;
-		
+
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Client");
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setSize(new Dimension(frame.getWidth(), frame.getHeight()));
-		
 
-	
-
-
-//CONTENTPANEL
+//ContenPanel
 		contentPane = new JPanel();
-
 		contentPane.setLayout(new BorderLayout());
 		contentPane.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()));
-//------------------------------------------------------------------------------------------
-//leftPanel - Panel in der Mitte zeigt die Topics in Form von einem Table an 
+
+//Menu - change gui theme
+		JMenuBar bar = new JMenuBar();
+		JMenu menu = new JMenu("Settings");
+		JMenu thememenu = new JMenu("Theme");
+		JMenuItem lightitem = new JMenuItem("Light-Theme");
+		JMenuItem darkitem = new JMenuItem("Dark-Theme");
+		lightitem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int n = JOptionPane.showConfirmDialog(frame,
+						"Die Verbindung wird beim Wechsel getrennt.\nWollen sie fortfahren?", "Information",
+						JOptionPane.YES_NO_OPTION);
+				if (n == 1)
+					return;
+				try {
+					UIManager.setLookAndFeel(new FlatLightLaf());
+					Controller.getInstance().disconnect();
+					loginscreeninit();
+				} catch (Exception e54) {
+				}
+
+			}
+		});
+		darkitem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int n = JOptionPane.showConfirmDialog(frame,
+						"Die Verbindung wird beim Wechsel getrennt.\nWollen sie fortfahren?", "Information",
+						JOptionPane.YES_NO_OPTION);
+				if (n == 1)
+					return;
+				try {
+					UIManager.setLookAndFeel(new FlatDarkLaf());
+					Controller.getInstance().disconnect();
+					loginscreeninit();
+				} catch (Exception e54) {
+				}
+
+			}
+		});
+
+		thememenu.add(lightitem);
+		thememenu.add(darkitem);
+		menu.add(thememenu);
+		bar.add(menu);
+
+		frame.setJMenuBar(bar);
+
+//LeftPanel
 		leftPanel = new JPanel();
 		leftPanel.setBorder(BorderFactory.createTitledBorder("Topic"));
 		leftPanel.setLayout(new BorderLayout());
-		//TABLE - die Klasse TopicTable übernimmt die Topics
+
+		// Table for the topics
 		final TopicTable model = new TopicTable();
-		
 		final JTable table = new JTable(model);
 		table.setFont(table.getFont().deriveFont(15f));
 		table.setColumnSelectionAllowed(false);
-//		table.setSelectionBackground(new Color(0,204,102));
 		table.setRowHeight(30);
 		table.setPreferredScrollableViewportSize(new Dimension(200, 200));
 		table.setFillsViewportHeight(true);
@@ -125,94 +152,82 @@ public class Gui extends Thread {
 				}
 			}
 		});
-		
+
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 1), "Topic",
 				TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
-		
+
+		// add to left JPanel
 		leftPanel.add(scrollPane);
-//---------------------------------------------------------------------------------------------------------------------
-///leftbottomPanel - CenterButtomPanel für den SubscribeButton
+
+		///LeftbottomPanel Button for disconnect
 		JPanel leftbottomPanel = new JPanel();
 		leftbottomPanel.setOpaque(true);
 		leftbottomPanel.setBorder(BorderFactory.createTitledBorder(""));
 		leftbottomPanel.setLayout(new BorderLayout());
-		
+
 		JButton btndisconnect = new JButton("disconnect client!");
 		btndisconnect.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Die Methode disconnect() unterbricht die Verbindung zum Broker
+
+				int n = JOptionPane.showConfirmDialog(frame, "Die Verbindung wird getrennt.\nWollen sie fortfahren?",
+						"Information", JOptionPane.YES_NO_OPTION);
+				if (n == 1)
+					return;
+				// unsubscribe to current subscribed and disconenct to client
 				Controller.getInstance().disconnect();
-				loginscreen();
-				
+				// dispose frame and start loginscreenframe
+				loginscreeninit();
+
 			}
 		});
 		leftbottomPanel.add(btndisconnect);
-		leftPanel.add(leftbottomPanel, BorderLayout.SOUTH);
-//------------------------------------------------------------------------------------------------
-// RIGHTPANEL - Panel auf der Rechten Seite
-		rightPanel = new JPanel();
-//		if(frame.getWidth() < 1000) {
-//			rightPanel.setPreferredSize(new Dimension(1000, frame.getHeight()));
-//		}
-		rightPanel.setLayout(new BorderLayout());
-//		rightPanel.setBorder(BorderFactory.createTitledBorder("Data"));
-//------------------------------------------------------------------------------------------------
 
-//TEXTAREA - TextArea für die Empfangen Nachrichten
+		// add to left JPanel
+		leftPanel.add(leftbottomPanel, BorderLayout.SOUTH);
+
+// RightPanel
+		rightPanel = new JPanel();
+		rightPanel.setLayout(new BorderLayout());
+		
+		// MessagePanel
+		JPanel messagePanel = new JPanel();
+		messagePanel.setLayout(new BorderLayout());
+		messagePanel.setBorder(BorderFactory.createTitledBorder("Nachrichten"));
+
+		//Textarea
 		txt = new JTextArea();
-		txt.setPreferredSize(new Dimension(rightPanel.getWidth(), txt.getFont().getSize()*23));
+		txt.setFont(txt.getFont().deriveFont(20f));
+		txt.setRows(Controller.getInstance().maxSizeMessage);
 		txt.setEditable(false);
 		txt.setLineWrap(false);
-		txt.setFont(txt.getFont().deriveFont(20f));
-		JScrollPane sp = new JScrollPane(txt);
-//------------------------------------------------------------------------------------------------
-//NachrichtPanel
-		JPanel nachrichtPanel = new JPanel();
-		nachrichtPanel.setLayout(new BorderLayout());
-		nachrichtPanel.setBorder(BorderFactory.createTitledBorder("Nachrichten"));
-		nachrichtPanel.add(sp);
 		
-//------------------------------------------------------------------------------------------------		
-// RIGHTBOTTOM - Panel auf der rechten Seite unten für die Datankurve
-		rightbottom = new JPanel();
-//		rightbottom.setLayout(new BorderLayout());
-//		rightbottom.setBorder(BorderFactory.createTitledBorder("Datenkurve"));
-//------------------------------------------------------------------------------------------------
+//		JScrollPane sp = new JScrollPane(txt);
+//		messagePanel.add(sp);
+		messagePanel.add(txt);
 
-		rightPanel.add(rightbottom);
-		rightPanel.add(nachrichtPanel, BorderLayout.NORTH);
-
+		rightPanel.add(messagePanel, BorderLayout.NORTH);
+//
+		
 		contentPane.add(leftPanel, BorderLayout.WEST);
 		contentPane.add(rightPanel, BorderLayout.CENTER);
 
-		
-		JMenuBar bar = new JMenuBar();
-		
-		JMenu menu = new JMenu("TEST");
-		menu.add(new JMenuItem("test"));
-		
-		bar.add(menu);
-		
-//		frame.setResizable(false);
-		
-		frame.setJMenuBar(bar);
 		frame.getContentPane().add(contentPane);
-		
-		
 		frame.setVisible(true);
 	}
 
 	
+/*
+ * 
+ * 
+ * frame for login
+ * 
+ * 
+ */
 	
 	
-	
-	
-	
-	//Screen für den Loginwindow
-	public void loginscreen() {
-		//Wenn ein Frame existiert wird er zerstört
+	public void loginscreeninit() {	
 		if (frame != null) {
 			frame.dispose();
 		}
@@ -224,133 +239,109 @@ public class Gui extends Thread {
 		framelogin.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		framelogin.setSize(500, 300);
 		framelogin.setLocationRelativeTo(null);
-//------------------------------------------------------------------------------------------------
 //LOGINSCREEN
 		JPanel loginscreen = new JPanel();
 		loginscreen.setLayout(new BorderLayout());
 		loginscreen.setPreferredSize(new Dimension(framelogin.getWidth(), framelogin.getHeight()));
-//------------------------------------------------------------------------------------------------
 //OBENPANEL
-		JPanel obenpanel = new JPanel();
-		obenpanel.setLayout(new BoxLayout(obenpanel, BoxLayout.Y_AXIS));
-		obenpanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
-//------------------------------------------------------------------------------------------------
+		JPanel northPanel = new JPanel();
+		northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.Y_AXIS));
+		northPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 //ADDRESSEPANEL		
 		JPanel addressePanel = new JPanel();
 		addressePanel.setLayout(new FlowLayout());
-//		addressePanel.setBackground(blackpanel);
-		
 
-		
 		JLabel serverlabel = new JLabel("Addresse: ");
-//		serverlabel.setForeground(Color.WHITE);
-//		serverlabel.setBackground(blackpanel);
-		
 
 		addressePanel.add(serverlabel);
-		
+
 		final JTextField server = new JTextField(21);
-//		server.setForeground(Color.white);
-//		server.setBackground(blacktextarea);
-		
+
 		server.setHorizontalAlignment(JTextField.CENTER);
 		server.setText(stndserver);
 		server.setBorder(BorderFactory.createEtchedBorder(0));
 		addressePanel.add(server);
-		
+
 		final JTextField port = new JTextField(10);
-//		port.setForeground(Color.white);
-//		port.setBackground(blacktextarea);
-		
+
 		port.setHorizontalAlignment(JTextField.CENTER);
 		port.setText(stndserver);
 		port.setBorder(BorderFactory.createEtchedBorder(0));
 		port.setText(stndport);
 		addressePanel.add(port);
-		
-//------------------------------------------------------------------------------------------------
+
 //FILESCHOOSEPANEL
 		final JPanel fileChoosePanel = new JPanel();
 		fileChoosePanel.setLayout(new FlowLayout());
-//		fileChoosePanel.setBackground(blackpanel);
-		
+
 		final JButton btnstnd = new JButton("Standart Zertifikate");
 		btnstnd.setForeground(Color.GREEN.darker());
-		
+
 		final JButton btnca = new JButton("ca-cert");
 		btnca.setForeground(Color.RED);
-		
+
 		final JButton btnkey = new JButton("key-cert");
 		btnkey.setForeground(Color.RED);
-		
+
 		final JButton btnclient = new JButton("client-cert");
 		btnclient.setForeground(Color.RED);
-		
+
 		btnstnd.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				standardcert = true;
-				try {
-					file1 = new File(capath);
-					file2 = new File(clientkeypath);
-					file3 = new File(clientpath);
-				}catch(Exception e0) {
-//					JOptionPane.showMessageDialog(null, " Keine Standardzertifikate!" ,
-//							"ERROR" , JOptionPane.ERROR_MESSAGE);
-				}
 
 				Controller.getInstance();
-				Controller.mqttconnection.cacertfile = file1;
-				Controller.mqttconnection.clientkeyfile = file2;
-				Controller.mqttconnection.clientpemfile = file3;
+
+				Controller.mqttconnection.capath = Controller.mqttconnection.stndcapath;
+
+				Controller.mqttconnection.clientkeypath = Controller.mqttconnection.stndclientkeypath;
+
+				Controller.mqttconnection.clientpath = Controller.mqttconnection.stndclientpath;
+
 				btnca.setForeground(Color.RED);
 				btnkey.setForeground(Color.RED);
 				btnclient.setForeground(Color.RED);
-				btnstnd.setForeground(Color.GREEN.darker());				
+				btnstnd.setForeground(Color.GREEN.darker());
 			}
 		});
-		
-		
 
 		btnca.addActionListener(new ActionListener() {
 
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				file1 = showOpenDialog("CHOOSE FILE: " + btnca.getName());
+				String file1 = showOpenDialog("Wähle das Zertifikat -> " + btnca.getName() + " aus!");
 				Controller.getInstance();
-				Controller.mqttconnection.cacertfile = file1;
+				Controller.mqttconnection.capath = file1;
 				standardcert = false;
 				btnca.setForeground(Color.GREEN.darker());
 				btnstnd.setForeground(Color.RED);
 			}
 		});
 		fileChoosePanel.add(btnca);
-		
-		btnkey.addActionListener(new ActionListener() {
 
+		btnkey.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				file2 = showOpenDialog("CHOOSE FILE: " + btnkey.getName());
+				String file2 = showOpenDialog("Wähle den Schlüssel -> " + btnkey.getName() + " aus !");
 				Controller.getInstance();
-				Controller.mqttconnection.clientkeyfile = file2;
+				Controller.mqttconnection.clientkeypath = file2;
 				standardcert = false;
 				btnkey.setForeground(Color.GREEN.darker());
 				btnstnd.setForeground(Color.RED);
 			}
 		});
 		fileChoosePanel.add(btnkey);
-		
-		btnclient.addActionListener(new ActionListener() {
 
+		btnclient.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				file3 = showOpenDialog("CHOOSE FILE: " + btnclient.getName());
+				String file3 = showOpenDialog("Wähle das Zertifikat -> " + btnclient.getName() + " aus!");
 				Controller.getInstance();
-				Controller.mqttconnection.clientpemfile = file3;
+				Controller.mqttconnection.clientpath = file3;
 				standardcert = false;
 				btnclient.setForeground(Color.GREEN.darker());
 				btnstnd.setForeground(Color.RED);
@@ -358,77 +349,55 @@ public class Gui extends Thread {
 			}
 		});
 		fileChoosePanel.add(btnclient);
-		
 
 		fileChoosePanel.add(btnstnd);
 		fileChoosePanel.setVisible(false);
-//------------------------------------------------------------------------------------------------
 //USERPANEL
 		JPanel userPanel = new JPanel();
 		userPanel.setLayout(new FlowLayout());
-//		userPanel.setBackground(blackpanel);
-		
-		
+
 		JLabel usernamelabel = new JLabel("Username");
-//		usernamelabel.setForeground(Color.WHITE);
-		
+
 		userPanel.add(usernamelabel);
-		
+
 		final JTextField username = new JTextField(20);
-//		username.setForeground(Color.white);
-//		username.setBackground(blacktextarea);
 		username.setHorizontalAlignment(JTextField.CENTER);
 		username.setText(stndserver);
 		username.setBorder(BorderFactory.createEtchedBorder(0));
 		username.setText("");
-		
+
 		userPanel.add(username);
 //------------------------------------------------------------------------------------------------
 //PASSWORDPANEL
 		JPanel passwordPanel = new JPanel();
-//		passwordPanel.setBackground(blackpanel);
-//		passwordlabel.setForeground(Color.WHITE);
-		
 		passwordPanel.setLayout(new FlowLayout());
 
 		JLabel passwordlabel = new JLabel("Passwort");
-//		passwordlabel.setForeground(Color.WHITE);
 		passwordPanel.add(passwordlabel);
-		
+
 		final JPasswordField password = new JPasswordField(20);
 
-//		password.setForeground(Color.white);
-//		password.setBackground(blacktextarea);
 		password.setHorizontalAlignment(JTextField.CENTER);
 		password.setText(stndserver);
 		password.setBorder(BorderFactory.createEtchedBorder(0));
 		password.setText("");
 		passwordPanel.add(password);
-//-------------------------------------------------------------------------------------------------
+
 //RADIOBTNPANEL
-		JPanel RadiobtnPanel = new JPanel();
-		RadiobtnPanel.setLayout(new FlowLayout());
-//		RadiobtnPanel.setBackground(blackpanel);
-		
+		JPanel radiobtnPanel = new JPanel();
+		radiobtnPanel.setLayout(new FlowLayout());
+
 		final JRadioButton runencrypted = new JRadioButton("unverschlüsselt");
-//		runencrypted.setBackground(blackpanel);
-//		runencrypted.setForeground(Color.WHITE);
+
 		runencrypted.setSelected(true);
 		runencrypted.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				fileChoosePanel.setVisible(false);
-				
-				Controller.getInstance();
-				Controller.mqttconnection.cacertfile = file1;
-				Controller.mqttconnection.clientkeyfile = file2;
-				Controller.mqttconnection.clientpemfile = file3;
 			}
 		});
-		
+
 		final JRadioButton rencrypted = new JRadioButton("verschlüsselt");
-//		rencrypted.setBackground(blackpanel);
-//		rencrypted.setForeground(Color.WHITE);
 		rencrypted.addActionListener(new ActionListener() {
 
 			@Override
@@ -437,94 +406,92 @@ public class Gui extends Thread {
 
 			}
 		});
-		
+
 		ButtonGroup group = new ButtonGroup();
 		group.add(runencrypted);
 		group.add(rencrypted);
 
-		RadiobtnPanel.add(runencrypted);
-		RadiobtnPanel.add(rencrypted);
+		radiobtnPanel.add(runencrypted);
+		radiobtnPanel.add(rencrypted);
 //------------------------------------------------------------------------------------------------
-		//alles wird zum obenpanel hinzugefügt
-		obenpanel.add(addressePanel);
-		obenpanel.add(userPanel);
-		obenpanel.add(passwordPanel);
-		obenpanel.add(RadiobtnPanel);
-		obenpanel.add(fileChoosePanel);
+		northPanel.add(addressePanel);
+		northPanel.add(userPanel);
+		northPanel.add(passwordPanel);
+		northPanel.add(radiobtnPanel);
+		northPanel.add(fileChoosePanel);
 //------------------------------------------------------------------------------------------------
 //UNTENPANEL
-		JPanel untenpanel = new JPanel();
-		
+		JPanel southPanel = new JPanel();
+
 		JButton btnlogin = new JButton("login");
 		btnlogin.setPreferredSize(new Dimension(framelogin.getWidth() - 50, 30));
+		
+		//connect
 		btnlogin.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				boolean a = false;
+
+				boolean clientconnected = false;
 				if (runencrypted.isSelected()) {
-					
-					if(port.getText().matches("") && username.getText().matches("") && password.getText().matches("")) {
-						
+
+					if (port.getText().matches("") && username.getText().matches("")
+							&& password.getText().matches("")) {
 						port.setText("1883");
-					}else if(port.getText().matches("")){
+					} else if (port.getText().matches("")) {
 						port.setText("1884");
 					}
-						
+
 					Controller.getInstance();
-					a = Controller.mqttconnection.connectionunverschluesselt(server.getText(),
+					clientconnected = Controller.mqttconnection.connectionunverschluesselt(server.getText(),
 							port.getText(), username.getText(), password.getText());
 					stndserver = server.getText();
 				}
 				if (rencrypted.isSelected()) {
-					if(port.getText().matches("")) {
-						port.setText("8883");
-					}
-					
+					port.setText("8883");
+
 					if (standardcert) {
-					} else if (!standardcert && file1 != null && file2 != null && file3 != null) {
+					} else if (!standardcert && btnca.getForeground() != Color.GREEN.darker()
+							&& btnclient.getForeground() != Color.GREEN.darker()
+							&& btnkey.getForeground() != Color.GREEN.darker()) {
 					} else {
-						JOptionPane.showMessageDialog(null, "Es wurden keine bzw. nicht alle Zertifikate ausgewählt!\nBitte wählen sie alle Zertifikate!" ,
-								"ERROR" , JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null,
+								"Es wurden keine bzw. nicht alle Zertifikate ausgewählt!\nBitte wählen sie alle Zertifikate!",
+								"ERROR", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 					Controller.getInstance();
-					a = Controller.mqttconnection.connectionverschluesselt(server.getText(),
+					clientconnected = Controller.mqttconnection.connectionverschluesselt(server.getText(),
 							port.getText(), username.getText(), password.getText());
 				}
-				
 
-				
-				if (a) {
-					init();
+				if (clientconnected) {
+					mainscreeninit();
 					framelogin.dispose();
 				} else {
-					JOptionPane.showMessageDialog(null, "Keine Verbindungsaufbau möglich!\nBitte vesuchen sie es erneut!" ,
-							"Connection" , JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				
 
 			}
 		});
+
+		southPanel.add(btnlogin);
+
+		loginscreen.add(southPanel, BorderLayout.SOUTH);
+		loginscreen.add(northPanel, BorderLayout.CENTER);
 		
-		untenpanel.add(btnlogin);
 		
-		loginscreen.add(untenpanel, BorderLayout.SOUTH);
-		loginscreen.add(obenpanel, BorderLayout.CENTER);
 		framelogin.getContentPane().add(loginscreen);
 		framelogin.pack();
 	}
 
-	private File showOpenDialog(String filename) {
+	private String showOpenDialog(String filename) {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle(filename);
-		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		fileChooser.setAcceptAllFileFilterUsed(false);
-		fileChooser.updateUI();
 		int choice = fileChooser.showOpenDialog(null);
-		if (choice == JFileChooser.APPROVE_OPTION) {
-			return fileChooser.getSelectedFile();
-		}
+		if (choice == JFileChooser.APPROVE_OPTION) 
+			return fileChooser.getSelectedFile().getAbsolutePath();
+		
 		return null;
 	}
 

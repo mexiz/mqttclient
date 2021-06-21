@@ -1,8 +1,8 @@
-package vorlagen;
+package utils;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-public class TopicNachrichten {
+public class TopicMessage {
 	
 	/*
 	 * 
@@ -15,7 +15,7 @@ public class TopicNachrichten {
 	MqttMessage nachricht;
 	String topic;
 	
-	public TopicNachrichten(String topic, MqttMessage nachricht) {
+	public TopicMessage(String topic, MqttMessage nachricht) {
 		this.topic = topic;
 		this.nachricht = nachricht;
 	}

@@ -1,4 +1,4 @@
-package vorlagen;
+package utils;
 
 import javax.swing.table.DefaultTableModel;
 
