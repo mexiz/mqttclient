@@ -58,10 +58,12 @@ public class Chart extends Thread {
 	private void createChartPanel(String topic, String yAchseName, TimeSeriesCollection chartcollection) {
 		XYDataset dataset = chartcollection;
 		chart = ChartFactory.createTimeSeriesChart(topic, "Uhrzeit", "Wert", dataset);
+		
 		XYPlot plot = (XYPlot) chart.getPlot();
 		plot.setBackgroundPaint(new Color(245, 245, 245));
 		plot.setDomainGridlinePaint(Color.black);
 		plot.setRangeGridlinePaint(Color.black);
+		
 		panelchart = new ChartPanel(chart);
 		Controller.getInstance().gui.rightbottom = new JPanel();
 		Controller.getInstance().gui.rightPanel.add(Controller.getInstance().gui.rightbottom);

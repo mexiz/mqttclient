@@ -30,18 +30,18 @@ public class DataCollection {
 		try {
 			int i = 0;
 			for (String key : json.keySet()) {
-				//Neue Timeseries werden zur Arraylist hinzugefügt wenn keine vorhanden sind
+				// new Timeseries added to ArrayList
 				if (series.size() == i) {
 					//first run
 					if (i == 0)
 						collection.removeAllSeries();
 					TimeSeries add = new TimeSeries(key);
-					//Es werden nur 10 Werte im Chart angezeigt
+					//only maxSize data
 					add.setMaximumItemCount(Controller.getInstance().maxSizeMessage);
 					series.add(add);
 					collection.addSeries(series.get(i));
 				}
-				//Hier werden die Werte in die Series gesetzt
+				//add data to series
 				series.get(i).add(s, json.getDouble(key));
 				i++;
 			}

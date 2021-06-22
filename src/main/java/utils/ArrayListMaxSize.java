@@ -3,7 +3,7 @@ package utils;
 import java.util.ArrayList;
 
 @SuppressWarnings("hiding")
-public class ArrayListMaxSize<TopicNachrichten> extends ArrayList<TopicNachrichten> {
+public class ArrayListMaxSize<Object> extends ArrayList<Object> {
 
 	/*
 	 * 
@@ -23,9 +23,9 @@ public class ArrayListMaxSize<TopicNachrichten> extends ArrayList<TopicNachricht
 	}
 
 	@SuppressWarnings("static-access")
-	synchronized public boolean add(TopicNachrichten e) {
+	synchronized public boolean add(Object e) {
 		//ein Array zum Zwischenspeichern wird erzeugt
-		ArrayList<TopicNachrichten> test = new ArrayList<TopicNachrichten>();
+		ArrayList<Object> test = new ArrayList<Object>();
 		
 		//Abfrage ob die Arraylist den maxsize Wert erreicht hat
 		if (super.size() == this.max) {

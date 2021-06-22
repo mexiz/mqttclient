@@ -36,9 +36,9 @@ public class SslUtil {
 			final String password)
 			throws Exception {
 			
-		System.out.println(caCrtFile);
-		System.out.println(crtFile);
-		System.out.println(keyFile);
+//		System.out.println(caCrtFile);
+//		System.out.println(crtFile);
+//		System.out.println(keyFile);
 		
 		Security.addProvider(new BouncyCastleProvider());
 		

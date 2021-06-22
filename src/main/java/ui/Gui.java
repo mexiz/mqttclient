@@ -37,7 +37,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import data.Controller;
 import utils.TopicTable;
 
-public class Gui extends Thread {
+public class Gui {
 
 	public JFrame frame;
 	public JFrame framelogin;
@@ -160,7 +160,7 @@ public class Gui extends Thread {
 		// add to left JPanel
 		leftPanel.add(scrollPane);
 
-		///LeftbottomPanel Button for disconnect
+		/// LeftbottomPanel Button for disconnect
 		JPanel leftbottomPanel = new JPanel();
 		leftbottomPanel.setOpaque(true);
 		leftbottomPanel.setBorder(BorderFactory.createTitledBorder(""));
@@ -178,8 +178,6 @@ public class Gui extends Thread {
 				// unsubscribe to current subscribed and disconenct to client
 				Controller.getInstance().disconnect();
 				// dispose frame and start loginscreenframe
-				loginscreeninit();
-
 			}
 		});
 		leftbottomPanel.add(btndisconnect);
@@ -190,26 +188,25 @@ public class Gui extends Thread {
 // RightPanel
 		rightPanel = new JPanel();
 		rightPanel.setLayout(new BorderLayout());
-		
+
 		// MessagePanel
 		JPanel messagePanel = new JPanel();
 		messagePanel.setLayout(new BorderLayout());
 		messagePanel.setBorder(BorderFactory.createTitledBorder("Nachrichten"));
 
-		//Textarea
+		// Textarea
 		txt = new JTextArea();
 		txt.setFont(txt.getFont().deriveFont(20f));
 		txt.setRows(Controller.getInstance().maxSizeMessage);
 		txt.setEditable(false);
 		txt.setLineWrap(false);
-		
+
 //		JScrollPane sp = new JScrollPane(txt);
 //		messagePanel.add(sp);
 		messagePanel.add(txt);
 
 		rightPanel.add(messagePanel, BorderLayout.NORTH);
-//
-		
+
 		contentPane.add(leftPanel, BorderLayout.WEST);
 		contentPane.add(rightPanel, BorderLayout.CENTER);
 
@@ -217,17 +214,15 @@ public class Gui extends Thread {
 		frame.setVisible(true);
 	}
 
-	
-/*
- * 
- * 
- * frame for login
- * 
- * 
- */
-	
-	
-	public void loginscreeninit() {	
+	/*
+	 * 
+	 * 
+	 * frame for login
+	 * 
+	 * 
+	 */
+
+	public void loginscreeninit() {
 		if (frame != null) {
 			frame.dispose();
 		}
@@ -425,8 +420,8 @@ public class Gui extends Thread {
 
 		JButton btnlogin = new JButton("login");
 		btnlogin.setPreferredSize(new Dimension(framelogin.getWidth() - 50, 30));
-		
-		//connect
+
+		// connect
 		btnlogin.addActionListener(new ActionListener() {
 			@SuppressWarnings("deprecation")
 			@Override
@@ -479,8 +474,7 @@ public class Gui extends Thread {
 
 		loginscreen.add(southPanel, BorderLayout.SOUTH);
 		loginscreen.add(northPanel, BorderLayout.CENTER);
-		
-		
+
 		framelogin.getContentPane().add(loginscreen);
 		framelogin.pack();
 	}
@@ -489,9 +483,9 @@ public class Gui extends Thread {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle(filename);
 		int choice = fileChooser.showOpenDialog(null);
-		if (choice == JFileChooser.APPROVE_OPTION) 
+		if (choice == JFileChooser.APPROVE_OPTION)
 			return fileChooser.getSelectedFile().getAbsolutePath();
-		
+
 		return null;
 	}
 

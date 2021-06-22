@@ -21,8 +21,9 @@ public class MqttPublisher extends Thread {
 		
 		try {
 			MemoryPersistence persistence = new MemoryPersistence();
-			pub = new MqttClient("tcp://test.mosquitto.org:1883", "zuba_pub_unencrypted", persistence);
-			pub.connect();
+//			pub = new MqttClient("tcp://test.mosquitto.org:1883", "z_pub_unencrypted", persistence);
+			pub = new MqttClient("tcp://127.0.0.1:1883", "z_pub_unencrypted", persistence);
+//			pub.connect();
 			if (pub.isConnected()) {
 				
 //				Controller.getInstance().gui.txt.append("Pub-Client connected\n");
@@ -49,7 +50,7 @@ public class MqttPublisher extends Thread {
 //					String e = ", " + "'e': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" ;
 //					String t = "{'temp': " + "'" + String.valueOf(Math.round(Math.random() * 100)) + "'" + w + q + e+ "}";
 
-//					MqttMessage testm = new MqttMessage(t.getBytes());^
+//					MqttMessage testm = new MqttMessage(t.getBytes());
 					
 					pub.publish("Temperatur", temp.getBytes(), 0, false);
 					pub.publish(topic[0][0].toString(), temp.getBytes(), 0, false);
@@ -68,7 +69,7 @@ public class MqttPublisher extends Thread {
 
 	
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(3000);
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}

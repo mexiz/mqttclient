@@ -84,7 +84,7 @@ public class Controller {
 				gui.txt.setText("");
 
 			} catch (MqttException e) {
-				System.err.println("1Class: Controller: " + e.getMessage());
+				System.err.println("1-Class: Controller: " + e.getMessage());
 			}
 		}
 		if (issub == false) {
@@ -93,28 +93,14 @@ public class Controller {
 				datenkurve.setChart(topic);
 			}
 			try {
-				mqttclient.subscribe(topic);	
+				mqttclient.subscribe(topic,0);
 				currentsubscribedtopic = topic;
 			} catch (MqttException e) {
-				System.err.println("2Class: Controller: " + e.getMessage());
+				System.err.println("2-Class: Controller: " + e.getMessage());
 			}
 			
 			issub = true;
 		}
-	}
-	public void unsubscribetocurrent() {
-		if (issub) {
-			try {
-				mqttclient.unsubscribe(currentsubscribedtopic);
-				currentsubscribedtopic = null;
-				issub = false;
-				stringnachricht.clear();
-				gui.txt.setText("");
-			} catch (MqttException e) {
-				System.err.println("1Class: Controller: " + e.getMessage());
-			}
-		}
-		
 	}
 	
 	public void disconnect() {
@@ -124,9 +110,12 @@ public class Controller {
 		}
 		if(!mqttclient.isConnected()) {
 			
-			instance.unsubscribetocurrent();
+			instance.issub = false;
+			instance.currentsubscribedtopic = "";
+			instance.stringnachricht = new ArrayListMaxSize<TopicMessage>(maxSizeMessage);
 			instance.stopmsg();	
-//			JOptionPane.showMessageDialog(null, "Verbindung wurde unterbrochen!\n Bitte erneut verbinden!" , "Connection lost" , JOptionPane.ERROR_MESSAGE);
+			gui.loginscreeninit();
+
 		}
 	}
 	

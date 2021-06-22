@@ -16,6 +16,7 @@ public class MqttOnMessage extends Thread{
 					if (Controller.getInstance().datenkurve != null) {
 						try {
 							JSONObject add = new JSONObject(new String(message.getPayload()));
+							//Only when message is a JsonObject
 							Controller.getInstance().datenkurve.addData(topic, add);
 							Controller.getInstance().addMessageConsole(topic, message);
 						} catch (JSONException e) {
@@ -29,6 +30,7 @@ public class MqttOnMessage extends Thread{
 
 				@Override
 				public void connectionLost(Throwable cause) {
+					//disconnect when connection lost
 					Controller.getInstance().disconnect();
 
 				}
