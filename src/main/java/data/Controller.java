@@ -88,7 +88,6 @@ public class Controller {
 			}
 		}
 		if (issub == false) {
-			// DATENCHART WIRD GEWECHSELT
 			if (datenkurve != null) {
 				datenkurve.setChart(topic);
 			}

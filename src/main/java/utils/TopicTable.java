@@ -5,12 +5,6 @@ import javax.swing.table.DefaultTableModel;
 @SuppressWarnings("serial")
 public class TopicTable extends DefaultTableModel {
 	
-	/*
-	 * 
-	 * In der Gui werden die Topics in Form eines Tables angezeigt.
-	 * Eventuell für manuelle in der Gui eingetragene Topics.
-	 * 
-	 */
 
 	public static String[] coloum = { "Name des Topics" };
 

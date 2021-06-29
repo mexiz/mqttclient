@@ -90,7 +90,7 @@ public class Gui {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int n = JOptionPane.showConfirmDialog(frame,
-						"Die Verbindung wird beim Wechsel getrennt.\nWollen sie fortfahren?", "Information",
+						"The Connection get lost.\nDo you want to keep going?", "Information",
 						JOptionPane.YES_NO_OPTION);
 				if (n == 1)
 					return;
@@ -108,7 +108,7 @@ public class Gui {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int n = JOptionPane.showConfirmDialog(frame,
-						"Die Verbindung wird beim Wechsel getrennt.\nWollen sie fortfahren?", "Information",
+						"The Connection get lost.\nDo you want to keep going?", "Information",
 						JOptionPane.YES_NO_OPTION);
 				if (n == 1)
 					return;

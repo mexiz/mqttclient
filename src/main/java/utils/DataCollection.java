@@ -12,13 +12,7 @@ import data.Controller;
 
 public class DataCollection {
 	
-	/*
-	 * 
-	 * Die Klasse übernimmt die Werte für die Datenkurve.
-	 * Es wird in der Klasse DatenKurve ein Objekt von DataCollection erzeugt um die
-	 * TimeSeries und TimeCollection zu speichern.
-	 * 
-	 */
+
 
 	ArrayList<TimeSeries> series;
 	TimeSeriesCollection collection;

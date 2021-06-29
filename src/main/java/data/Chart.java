@@ -21,12 +21,6 @@ import utils.TopicTable;
 
 public class Chart extends Thread {
 
-	/*
-	 * 
-	 *  Chart für die Datanangabe
-	 * 
-	 */
-
 	HashMap<String, DataCollection> collectionliste;
 
 	JFreeChart chart;

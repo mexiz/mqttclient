@@ -59,7 +59,7 @@ public class MqttConnection {
 				client.connect(options);
 			} catch (MqttException e1) {
 				JOptionPane.showMessageDialog(null,
-						"Keine Verbindungsaufbau möglich!\nERROR: " + e1.getCause().toString(), "Connection",
+						"No Connection!\nERROR: " + e1.getCause().toString(), "Connection",
 						JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
@@ -79,7 +79,7 @@ public class MqttConnection {
 				client.connect(options);
 			} catch (MqttException e1) {
 				JOptionPane.showMessageDialog(null,
-						"Keine Verbindungsaufbau möglich!\nERROR: " + e1.getCause().toString(), "Connection",
+						"No Connection!\nERROR: " + e1.getCause().toString(), "Connection",
 						JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
@@ -119,7 +119,7 @@ public class MqttConnection {
 			} catch (MqttException e2) {
 //				System.err.println("4-Class: MqttConnection: " + e2.getMessage());
 				JOptionPane.showMessageDialog(null,
-						"Keine Verbindungsaufbau möglich!\nERROR: " + e2.getCause().toString(), "Connection",
+						"No Connection!\nERROR: " + e2.getCause().toString(), "Connection",
 						JOptionPane.ERROR_MESSAGE);
 //				e2.printStackTrace();
 				return false;
